@@ -8,3 +8,5 @@ The method I used to install asciidoctor was to install the latest Ruby gems:
 sudo apt install ruby
 sudo gem install asciidoctor asciidoctor-diagram asciidoctor-pdf
 ```
+
+For diagrams, Draw.io is used.
