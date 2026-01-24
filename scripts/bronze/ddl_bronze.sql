@@ -6,6 +6,9 @@
         sudo -u postgres psql -f ddl_bronze.sql
 */
 
+
+\timing on
+
 \c datawarehouse;
 
 \echo ''
@@ -91,5 +94,7 @@ CREATE TABLE bronze.erp_px_cat_g1v2 (
     subcategory VARCHAR(50),
     maintenance VARCHAR(50)
 );
+
+\timing off
 
 \q

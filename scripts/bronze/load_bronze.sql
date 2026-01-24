@@ -1,4 +1,12 @@
+/*
+    DDL Script to load bronze (raw 'E'xtract) tables.
 
+    Run with psql:
+
+        sudo -u postgres psql -f load_bronze.sql
+*/
+
+\timing on
 
 \c datawarehouse;
 
@@ -40,5 +48,7 @@ TRUNCATE TABLE bronze.erp_loc_a101;
 \echo 'erp_loc_a101...'
 TRUNCATE TABLE bronze.erp_px_cat_g1v2;
 \copy bronze.erp_px_cat_g1v2 FROM '../datasets/source_erp/PX_CAT_G1V2.csv' DELIMITER ',' CSV HEADER
+
+\timing off
 
 \q

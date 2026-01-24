@@ -11,7 +11,13 @@ WARNING:
     Running this script will drop the entire 'DataWarehouse' database if it exists. 
     All data in the database will be permanently deleted. Proceed with caution 
     and ensure you have proper backups before running this script.
+
+Run with psql:
+    sudo -u postgres psql -f init_database.sql
+=============================================================
 */
+
+\timing on
 
 \echo ''
 \echo '====================================================='
@@ -33,5 +39,7 @@ CREATE DATABASE datawarehouse;
 CREATE SCHEMA bronze;
 CREATE SCHEMA silver;
 CREATE SCHEMA gold;
+
+\timing off
 
 \q
