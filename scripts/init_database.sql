@@ -13,18 +13,25 @@ WARNING:
     and ensure you have proper backups before running this script.
 */
 
-
--- Drop and recreate the 'DataWarehouse' database
+\echo ''
+\echo '====================================================='
+\echo "Drop and recreate the 'datawarehouse' database"
+\echo '====================================================='
 DROP DATABASE IF EXISTS datawarehouse;
-
--- Create the 'DataWarehouse' database
 CREATE DATABASE datawarehouse;
 
+\echo ''
+\echo '--------------------------------------'
+\echo 'connecting...'
+\echo '--------------------------------------'
 \c datawarehouse;
 
--- Create Schemas
+\echo ''
+\echo '--------------------------------------'
+\echo 'create schema bronze, silver, gold...'
+\echo '--------------------------------------'
 CREATE SCHEMA bronze;
-
 CREATE SCHEMA silver;
-
 CREATE SCHEMA gold;
+
+\q
