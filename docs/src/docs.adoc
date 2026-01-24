@@ -1,0 +1,10 @@
+= Documentation
+
+The project documentation is written in AsciiDoc.
+If you want to modify and rebuild the documentation, you will need Asciidoctor.
+The method I used to install asciidoctor was to install the latest Ruby gems:
+
+```
+sudo apt install ruby
+sudo gem install asciidoctor asciidoctor-diagram asciidoctor-pdf
+```

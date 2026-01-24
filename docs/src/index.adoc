@@ -1,0 +1,8 @@
+= Project: Data Warehouse with PostgreSQL
+:toc: left
+:toclevels: 3
+
+include::prepare.adoc[leveloffset=+1]
+include::docs.adoc[leveloffset=+1]
+// include::data_flow.adoc[leveloffset=+1]
+
