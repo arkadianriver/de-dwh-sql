@@ -443,6 +443,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_preparing_the_environment">Preparing the environment</a></li>
 <li><a href="#_documentation">Documentation</a></li>
 <li><a href="#_data_flow">Data Flow</a></li>
+<li><a href="#_bronze_layer">Bronze layer</a></li>
+<li><a href="#_silver_layer">Silver layer</a>
+<ul class="sectlevel2">
+<li><a href="#_data_integration_analysis_and_sketch">Data integration analysis and sketch</a></li>
+</ul>
+</li>
+<li><a href="#_gold_layer">Gold layer</a></li>
 </ul>
 </div>
 </div>
@@ -492,7 +499,26 @@ sudo gem install asciidoctor asciidoctor-diagram asciidoctor-pdf</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>For diagrams, Draw.io is used.</p>
+<p>For diagrams, some additional packages are required.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>sudo apt install graphviz plantuml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For mermaid, rather than use <code>mermaid-cli</code> from the package manager,
+I wanted the latest version of mermaid-cli via npm
+(after installing nvm for the latest version of nodejs).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+source ~/.bashrc || source ~/.zshrc
+nvm install --lts
+
+npm install -g @mermaid-js/mermaid-cli</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -501,15 +527,85 @@ sudo gem install asciidoctor asciidoctor-diagram asciidoctor-pdf</code></pre>
 <div class="sectionbody">
 <div class="imageblock">
 <div class="content">
-<img src="data_flow.drawio.png" alt="Data Flow Diagram">
+<img src="data_flow.png" alt="data flow" width="380" height="617">
 </div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_bronze_layer">Bronze layer</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Bronze layer is the initial storage area for raw data ingested from various sources. This layer is designed to store data in its original format, preserving its integrity and providing a foundation for further processing and transformation.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_silver_layer">Silver layer</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Silver layer serves as the intermediate processing stage in the data pipeline. In this layer, raw data from the Bronze layer is cleaned, transformed, and enriched to enhance its quality and usability for analysis.</p>
+</div>
+<div class="paragraph">
+<p>The key functions of the Silver layer include:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Data Cleaning: Removing duplicates, handling missing values, and correcting inconsistencies in the data.</p>
+</li>
+<li>
+<p>Data Transformation: Converting data into a more structured format, applying business rules, and aggregating information as needed.</p>
+</li>
+<li>
+<p>Data Enrichment: Integrating additional data sources to provide more context and insights.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>By implementing these processes in the Silver layer, we ensure that the data is reliable and ready for advanced analytics and reporting in the subsequent Gold layer.</p>
+</div>
+<div class="sect2">
+<h3 id="_data_integration_analysis_and_sketch">Data integration analysis and sketch</h3>
+<div class="imageblock">
+<div class="content">
+<img src="silver_analysis.png" alt="silver analysis" width="843" height="259">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_gold_layer">Gold layer</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Gold layer represents the final stage in the data pipeline, where data is fully refined and optimized for business intelligence and analytics. In this layer, data from the Silver layer is aggregated, summarized, and structured to meet specific reporting and analytical needs.</p>
+</div>
+<div class="paragraph">
+<p>The key functions of the Gold layer include:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Data Aggregation: Summarizing data to provide high-level insights, such as totals, averages, and other key performance indicators (KPIs).</p>
+</li>
+<li>
+<p>Data Structuring: Organizing data into star or snowflake schemas to facilitate efficient querying and reporting.</p>
+</li>
+<li>
+<p>Data Optimization: Enhancing performance through indexing, partitioning, and other techniques to ensure fast access to critical information.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>By implementing these processes in the Gold layer, we ensure that the data is not only accurate and reliable but also tailored to support strategic decision-making and advanced analytics across the organization.</p>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-01-24 15:18:34 -0600
+Last updated 2026-01-24 23:14:56 -0600
 </div>
 </div>
 </body>

@@ -9,4 +9,20 @@ sudo apt install ruby
 sudo gem install asciidoctor asciidoctor-diagram asciidoctor-pdf
 ```
 
-For diagrams, Draw.io is used.
+For diagrams, some additional packages are required.
+
+```
+sudo apt install graphviz plantuml
+```
+
+For mermaid, rather than use `mermaid-cli` from the package manager,
+I wanted the latest version of mermaid-cli via npm
+(after installing nvm for the latest version of nodejs).
+
+```
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+source ~/.bashrc || source ~/.zshrc
+nvm install --lts
+
+npm install -g @mermaid-js/mermaid-cli
+```

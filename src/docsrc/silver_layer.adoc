@@ -1,0 +1,52 @@
+= Silver layer
+
+The Silver layer serves as the intermediate processing stage in the data pipeline. In this layer, raw data from the Bronze layer is cleaned, transformed, and enriched to enhance its quality and usability for analysis.
+
+The key functions of the Silver layer include:
+
+* Data Cleaning: Removing duplicates, handling missing values, and correcting inconsistencies in the data.
+* Data Transformation: Converting data into a more structured format, applying business rules, and aggregating information as needed.
+* Data Enrichment: Integrating additional data sources to provide more context and insights.
+
+By implementing these processes in the Silver layer, we ensure that the data is reliable and ready for advanced analytics and reporting in the subsequent Gold layer.
+
+== Data integration analysis and sketch
+
+[plantuml,silver_analysis,png]
+----
+@startuml
+
+package CRM {
+    map crm_sales_details {
+        cst_id =>
+        prd_key =>
+    }
+    map crm_cust_info {
+        cst_id =>
+        cst_key =>
+    }
+    map crm_prd_inf {
+        prd_key =>
+    }
+    crm_sales_details::cst_id --> crm_cust_info::cst_id
+    crm_sales_details::prd_key --> crm_prd_inf::prd_key
+}
+
+package ERP {
+    map erp_cust_az12 {
+        cid =>
+    }
+    map erp_loc_a101 {
+        cid =>
+    }
+    map erp_px_cat_g1v2 {
+        id =>
+    }
+    erp_cust_az12::cid --> crm_cust_info::cst_key
+    erp_loc_a101::cid --> crm_cust_info::cst_key
+    erp_px_cat_g1v2::prd_key --> crm_prd_inf::prd_key
+}
+
+@enduml
+----
+

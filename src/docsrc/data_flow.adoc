@@ -1,3 +1,23 @@
 = Data Flow
 
-image::data_flow.drawio.png[Data Flow Diagram]
+[mermaid,data_flow,png]
+----
+flowchart LR
+    d1-->b1 & b2 & b3
+    d2-->b4 & b5 & b6
+
+	subgraph Data Sources
+    d1@{ shape: doc, label: "CRM" }
+	d2@{ shape: doc, label: "ERP" }
+    end
+
+    subgraph Bronze Layer
+    b1@{ shape: div-rect, label: "crm_cust_info" }
+	b2@{ shape: div-rect, label: "crm_prd_inf" }
+	b3@{ shape: div-rect, label: "crm_sales_details" }
+    
+	b4@{ shape: div-rect, label: "erp_cust_az12" }
+	b5@{ shape: div-rect, label: "erp_loc_a101" }
+	b6@{ shape: div-rect, label: "erp_px_cat_g1v2" }
+    end
+----
