@@ -9,6 +9,8 @@ sudo apt install ruby
 sudo gem install asciidoctor asciidoctor-diagram asciidoctor-pdf
 ```
 
+== Diagram support
+
 For diagrams, some additional packages are required.
 
 ```
@@ -25,4 +27,46 @@ source ~/.bashrc || source ~/.zshrc
 nvm install --lts
 
 npm install -g @mermaid-js/mermaid-cli
+```
+
+== OCR Image Text Extraction support
+
+For OCR image text extraction, Tesseract and the Python Pillow and pytesseract libraries are required.
+
+```
+sudo apt install tesseract-ocr
+pip install Pillow pytesseract
+```
+
+=== Preparing the Specifications Table
+
+I decided to not make the extraction part of the pipeline and just prep the source beforehand.
+To recreate the table preparation process:
+
+1.  Extract the text:
+    
+    pushd src/docsrc/img-extract
+    python ocr-extract.py > ocr-output.txt
+    popd
+
+2.  _......x......_
+
+3.  Okay, nevermind. ChatGPT did it all for me. I uploaded the image and gave it this prompt:
+
+    I will upload an image that is basically a fancy table.
+    Extract the text from the image and convert it to a table in AsciiDoc.
+    Let me know when you're ready.
+
+But the OCR was a good exercise anyway.
+
+=== Preparing the ETL mindmap
+
+Let's try ChatGPT again.
+
+== Building the documentation
+
+To build the documentation, navigate to the `src/docsrc` directory and run:
+
+```
+docbuild.sh all
 ```

@@ -1,3 +1,6 @@
 *.log
 .*.bkp
 .asciidoctor/
+.venv
+__pycache__/
+*.pyc

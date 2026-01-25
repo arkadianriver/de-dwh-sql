@@ -441,8 +441,18 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
 <li><a href="#_preparing_the_environment">Preparing the environment</a></li>
-<li><a href="#_documentation">Documentation</a></li>
-<li><a href="#_data_flow">Data Flow</a></li>
+<li><a href="#_documentation">Documentation</a>
+<ul class="sectlevel2">
+<li><a href="#_diagram_support">Diagram support</a></li>
+<li><a href="#_ocr_image_text_extraction_support">OCR Image Text Extraction support</a></li>
+<li><a href="#_building_the_documentation">Building the documentation</a></li>
+</ul>
+</li>
+<li><a href="#_data_flow">Data Flow</a>
+<ul class="sectlevel2">
+<li><a href="#_specifications">Specifications</a></li>
+</ul>
+</li>
 <li><a href="#_bronze_layer">Bronze layer</a></li>
 <li><a href="#_silver_layer">Silver layer</a>
 <ul class="sectlevel2">
@@ -498,6 +508,8 @@ The method I used to install asciidoctor was to install the latest Ruby gems:</p
 sudo gem install asciidoctor asciidoctor-diagram asciidoctor-pdf</code></pre>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_diagram_support">Diagram support</h3>
 <div class="paragraph">
 <p>For diagrams, some additional packages are required.</p>
 </div>
@@ -521,6 +533,64 @@ npm install -g @mermaid-js/mermaid-cli</code></pre>
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_ocr_image_text_extraction_support">OCR Image Text Extraction support</h3>
+<div class="paragraph">
+<p>For OCR image text extraction, Tesseract and the Python Pillow and pytesseract libraries are required.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>sudo apt install tesseract-ocr
+pip install Pillow pytesseract</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>I decided to not make the extraction part of the pipeline and just prep the source beforehand.
+To recreate the table preparation process:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Extract the text:</p>
+<div class="literalblock">
+<div class="content">
+<pre>pushd src/docsrc/img-extract
+python ocr-extract.py &gt; ocr-output.txt
+popd</pre>
+</div>
+</div>
+</li>
+<li>
+<p><em>&#8230;&#8203;&#8230;&#8203;x&#8230;&#8203;&#8230;&#8203;</em></p>
+</li>
+<li>
+<p>Okay, nevermind. ChatGPT did it all for me. I uploaded the image and gave it this prompt:</p>
+<div class="literalblock">
+<div class="content">
+<pre>I will upload an image that is basically a fancy table.
+Extract the text from the image and convert it to a table in AsciiDoc.
+Let me know when you're ready.</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>But the OCR was a good exercise anyway.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_building_the_documentation">Building the documentation</h3>
+<div class="paragraph">
+<p>To build the documentation, navigate to the <code>src/docsrc</code> directory and run:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>docbuild.sh all</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div class="sect1">
 <h2 id="_data_flow">Data Flow</h2>
@@ -529,6 +599,82 @@ npm install -g @mermaid-js/mermaid-cli</code></pre>
 <div class="content">
 <img src="data_flow.png" alt="data flow" width="380" height="617">
 </div>
+</div>
+<div class="sect2">
+<h3 id="_specifications">Specifications</h3>
+<div class="paragraph">
+<p>The chosen data flow results from the following specifications:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 18.1818%;">
+<col style="width: 27.2727%;">
+<col style="width: 27.2727%;">
+<col style="width: 27.2728%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Category</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Bronze Layer</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Silver Layer</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Gold Layer</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Definition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Raw, unprocessed data as-is from sources</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Clean &amp; standardized data</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Business-Ready data</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Objective</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Traceability &amp; Debugging</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(Intermediate Layer) Prepare Data for Analysis</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Provide data to be consumed for reporting &amp; Analytics</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Object Type</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tables</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tables</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Views</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Load Method</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Full Load (Truncate &amp; Insert)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Full Load (Truncate &amp; Insert)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">None</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Data Transformation</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">None (as-is)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Data Cleaning<br>
+Data Standardization<br>
+Data Normalization<br>
+Derived Columns<br>
+Data Enrichment</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Data Integration<br>
+Data Aggregation<br>
+Business Logic &amp; Rules</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Data Modeling</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">None (as-is)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">None (as-is)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Star Schema<br>
+Aggregated Objects<br>
+Flat Tables</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Target Audience</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Data Engineers</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Data Analysts<br>
+Data Engineers</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Data Analysts<br>
+Business Users</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>

@@ -1,0 +1,91 @@
+Definition
+
+Objective
+
+Object Type
+
+Load Method
+
+ii
+
+Data
+Transformation
+
+ 
+
+Data Modeling
+
+Target Audience
+
+ 
+
+il
+
+«
+
+Raw, unprocessed data
+as-is from sources
+
+Traceability & Debugging
+
+Tables
+
+Full Load
+(Truncate & Insert)
+
+None (as-is)
+
+None (as-is)
+
+- Data Engineers
+
+KY
+
+Clean & standardized data
+
+(Intermediate Layer)
+Prepare Data for Analysis
+
+Tables
+
+Full Load
+(Truncate & Insert)
+
+- Data Cleaning
+
+- Data Standardization
+- Data Normalization
+
+- Derived Columns
+
+- Data Enrichment
+
+None (as-is)
+
+- Data Analysts
+- Data Engineers
+
+KY
+
+Business-Ready data
+
+ 
+
+Provide data to be consumed
+for reporting & Analytics
+
+Views
+
+None
+
+- Data Integration
+- Data Aggregation
+- Business Logic & Rules
+
+- Start Schema
+- Aggregated Objects
+- Flat Tables
+
+- Data Analysts
+- Business Users
+
