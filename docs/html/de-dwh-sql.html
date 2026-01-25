@@ -443,14 +443,21 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_preparing_the_environment">Preparing the environment</a></li>
 <li><a href="#_documentation">Documentation</a>
 <ul class="sectlevel2">
-<li><a href="#_diagram_support">Diagram support</a></li>
-<li><a href="#_ocr_image_text_extraction_support">OCR Image Text Extraction support</a></li>
 <li><a href="#_building_the_documentation">Building the documentation</a></li>
+<li><a href="#_diagram_support">Diagram support</a></li>
+<li><a href="#_ocr_image_text_extraction_support">OCR image text extraction support</a>
+<ul class="sectlevel3">
+<li><a href="#_preparing_the_specifications_table">Preparing the specifications table</a></li>
+<li><a href="#_preparing_the_etl_mindmap">Preparing the ETL mindmap</a></li>
 </ul>
 </li>
-<li><a href="#_data_flow">Data Flow</a>
+</ul>
+</li>
+<li><a href="#_data_architecture">Data architecture</a>
 <ul class="sectlevel2">
+<li><a href="#_etl_task_breakdown">ETL task breakdown</a></li>
 <li><a href="#_specifications">Specifications</a></li>
+<li><a href="#_data_flow">Data Flow</a></li>
 </ul>
 </li>
 <li><a href="#_bronze_layer">Bronze layer</a></li>
@@ -509,6 +516,17 @@ sudo gem install asciidoctor asciidoctor-diagram asciidoctor-pdf</code></pre>
 </div>
 </div>
 <div class="sect2">
+<h3 id="_building_the_documentation">Building the documentation</h3>
+<div class="paragraph">
+<p>To build the documentation, navigate to the <code>src/docsrc</code> directory and run:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>docbuild.sh all</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
 <h3 id="_diagram_support">Diagram support</h3>
 <div class="paragraph">
 <p>For diagrams, some additional packages are required.</p>
@@ -534,7 +552,7 @@ npm install -g @mermaid-js/mermaid-cli</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_ocr_image_text_extraction_support">OCR Image Text Extraction support</h3>
+<h3 id="_ocr_image_text_extraction_support">OCR image text extraction support</h3>
 <div class="paragraph">
 <p>For OCR image text extraction, Tesseract and the Python Pillow and pytesseract libraries are required.</p>
 </div>
@@ -544,6 +562,8 @@ npm install -g @mermaid-js/mermaid-cli</code></pre>
 pip install Pillow pytesseract</code></pre>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_preparing_the_specifications_table">Preparing the specifications table</h4>
 <div class="paragraph">
 <p>I decided to not make the extraction part of the pipeline and just prep the source beforehand.
 To recreate the table preparation process:</p>
@@ -579,31 +599,57 @@ Let me know when you're ready.</pre>
 <p>But the OCR was a good exercise anyway.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_building_the_documentation">Building the documentation</h3>
+<div class="sect3">
+<h4 id="_preparing_the_etl_mindmap">Preparing the ETL mindmap</h4>
 <div class="paragraph">
-<p>To build the documentation, navigate to the <code>src/docsrc</code> directory and run:</p>
+<p>Let&#8217;s try ChatGPT again.</p>
 </div>
-<div class="listingblock">
+<div class="paragraph">
+<p>Well done, ChatGPT! Here&#8217;s the prompt and you can find the source image in this repository
+under <code>src/docsrc/img-extract/etl-map.png</code>.</p>
+</div>
+<div class="literalblock">
 <div class="content">
-<pre class="highlight"><code>docbuild.sh all</code></pre>
+<pre>New task: Now I'm going to upload an image of a fancy mindmap diagram.
+I'd like you to extract the information from the image and recreate it
+using mermaid syntax. Let me know when you're ready.</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>I&#8217;ll clean it up with icons and shapes myself.
+Can&#8217;t let AI rob me of all the fun!</p>
+</div>
+<div class="paragraph">
+<p>(I later asked ChatGPT to convert to a Drawio file instead, but it had an error about
+IDs. After debugging with <code>xmllint</code> and fixing the IDs, I got a valid Drawio file,
+but it was only two node levels deep and didn&#8217;t follow the style anyway. So, I&#8217;m
+sticking with mermaid for now.)</p>
 </div>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_data_flow">Data Flow</h2>
+<h2 id="_data_architecture">Data architecture</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>Before defining the data flow, it&#8217;s essential to establish
+clear specifications for each layer in the data pipeline. This ensures
+that each layer serves its intended purpose and meets the requirements
+of the overall data strategy.</p>
+</div>
+<div class="sect2">
+<h3 id="_etl_task_breakdown">ETL task breakdown</h3>
 <div class="imageblock">
 <div class="content">
-<img src="data_flow.png" alt="data flow" width="380" height="617">
+<img src="etl-mindmap.png" alt="etl mindmap" width="1674" height="1044">
+</div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_specifications">Specifications</h3>
 <div class="paragraph">
-<p>The chosen data flow results from the following specifications:</p>
+<p>Given the chosen tasks in the ETL process, we have the following specifications.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -675,6 +721,14 @@ Business Users</p></td>
 </tr>
 </tbody>
 </table>
+</div>
+<div class="sect2">
+<h3 id="_data_flow">Data Flow</h3>
+<div class="imageblock">
+<div class="content">
+<img src="data_flow.png" alt="data flow" width="380" height="617">
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -751,7 +805,7 @@ Business Users</p></td>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-01-24 23:14:56 -0600
+Last updated 2026-01-25 13:33:35 -0600
 </div>
 </div>
 </body>

@@ -9,6 +9,16 @@ sudo apt install ruby
 sudo gem install asciidoctor asciidoctor-diagram asciidoctor-pdf
 ```
 
+
+== Building the documentation
+
+To build the documentation, navigate to the `src/docsrc` directory and run:
+
+```
+docbuild.sh all
+```
+
+
 == Diagram support
 
 For diagrams, some additional packages are required.
@@ -29,7 +39,8 @@ nvm install --lts
 npm install -g @mermaid-js/mermaid-cli
 ```
 
-== OCR Image Text Extraction support
+
+== OCR image text extraction support
 
 For OCR image text extraction, Tesseract and the Python Pillow and pytesseract libraries are required.
 
@@ -38,7 +49,7 @@ sudo apt install tesseract-ocr
 pip install Pillow pytesseract
 ```
 
-=== Preparing the Specifications Table
+=== Preparing the specifications table
 
 I decided to not make the extraction part of the pipeline and just prep the source beforehand.
 To recreate the table preparation process:
@@ -63,10 +74,17 @@ But the OCR was a good exercise anyway.
 
 Let's try ChatGPT again.
 
-== Building the documentation
+Well done, ChatGPT! Here's the prompt and you can find the source image in this repository
+under `src/docsrc/img-extract/etl-map.png`.
 
-To build the documentation, navigate to the `src/docsrc` directory and run:
+    New task: Now I'm going to upload an image of a fancy mindmap diagram.
+    I'd like you to extract the information from the image and recreate it
+    using mermaid syntax. Let me know when you're ready.
 
-```
-docbuild.sh all
-```
+I'll clean it up with icons and shapes myself.
+Can't let AI rob me of all the fun!
+
+(I later asked ChatGPT to convert to a Drawio file instead, but it had an error about
+IDs. After debugging with `xmllint` and fixing the IDs, I got a valid Drawio file,
+but it was only two node levels deep and didn't follow the style anyway. So, I'm
+sticking with mermaid for now.)

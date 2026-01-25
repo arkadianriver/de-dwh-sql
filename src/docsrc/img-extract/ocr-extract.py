@@ -3,7 +3,7 @@ import pytesseract
 from PIL import Image
 
 # Provide the name/path of your file image
-image_path = "../../../datasets/source_images/spec-table-capture.png"
+image_path = "./source_images/spec-table-capture.png"
 
 # Open the image using Pillow
 img = Image.open(image_path)

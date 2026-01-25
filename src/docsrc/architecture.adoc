@@ -1,0 +1,190 @@
+= Data architecture
+
+Before defining the data flow, it's essential to establish
+clear specifications for each layer in the data pipeline. This ensures
+that each layer serves its intended purpose and meets the requirements
+of the overall data strategy.
+
+
+== ETL task breakdown
+
+[plantuml,etl-mindmap,png]
+----
+@startmindmap
+<style>
+mindmapDiagram {
+  .myroot {
+    FontSize 28
+    FontColor blue
+    FontStyle bold
+  }
+  .flagged {
+    BackgroundColor #e9e
+    FontColor blue
+  }
+  node {
+    FontSize 16
+    Padding 14
+    Margin 18
+    HorizontalAlignment center
+  }
+  rootNode {
+    Padding 48
+    Margin 12
+    LineColor blue
+    LineThickness 6.0
+    RoundCorner 60
+  }
+  :depth(1) {
+    FontSize 20
+    Padding 18
+    Margin 18
+    HorizontalAlignment center
+    LineColor darkblue
+    RoundCorner 50
+    LineColor blue
+  }
+  leafNode {
+    Padding 6
+    Margin 6
+    HorizontalAlignment center
+    LineColor black
+    LineThickness 1.0
+    RoundCorner 0
+  }
+}
+</style>
+-[#aa99aa] ETL <<myroot>>
+--[#lightgreen] Extraction
+---[#lightgreen] Extract Types
+---- <&flag> Full Extraction <<flagged>>
+----[#lightgreen] Incremental Extraction
+---[#lightgreen] Extraction Methods
+---- <&flag> Pull Extraction <<flagged>>
+----[#lightgreen] Push Extraction
+---[#lightgreen] Extract Techniques
+----[#lightgreen] Manual Data Extraction
+----[#lightgreen] Database Querying
+---- <&flag>File Parsing <<flagged>>
+----[#lightgreen] API Calls
+----[#lightgreen] Event Based Streaming
+----[#lightgreen] CDC
+----[#lightgreen] Web Scraping
+++ <&flag> Transformation <<flagged>>
++++[#cyan] Data Enrichment
++++[#cyan] Data Integration
++++[#cyan] Derived Columns
++++[#cyan] Data Normalization & Standardization
++++[#cyan] Business Rules & Logic
++++[#cyan] Data Aggregations
++++[#cyan] Data Cleansing
+++++[#cyan] Remove Duplicates
+++++[#cyan] Data Filtering
+++++[#cyan] Handling Missing Data
+++++[#cyan] Handling Invalid Values
+++++[#cyan] Outlier Detection
+++++[#cyan] Data Type Casting
+++++[#cyan] Handling Unwanted Spaces
+++[#gold] Load
++++[#gold] Processing Types
+++++ <&flag> Batch Processing <<flagged>>
+++++[#gold] Stream Processing
++++[#gold] Load Methods
+++++ <&flag> Full Load <<flagged>>
++++++ <&flag> Truncate & Insert <<flagged>>
++++++[#gold] Upsert
++++++[#gold] Drop Create Insert
+++++[#gold] Incremental Load
++++++[#gold] Upsert
++++++[#gold] Append
++++++[#gold] Merge
++++[#gold] Slowly Changing Dimensions (SCD)
+++++[#gold] SCD 0 No Historization
+++++ <&flag> SCD 1 Overwrite <<flagged>>
+++++[#gold] SCD 2 Historization
+++++[#gold] SCD ...
+@endmindmap
+----
+
+
+== Specifications
+
+Given the chosen tasks in the ETL process, we have the following specifications.
+
+[cols="2,3,3,3", options="header"]
+|===
+|*Category* |*Bronze Layer* |*Silver Layer* |*Gold Layer*
+
+|*Definition*
+| Raw, unprocessed data as-is from sources
+| Clean & standardized data
+| Business-Ready data
+
+|*Objective*
+| Traceability & Debugging
+| (Intermediate Layer) Prepare Data for Analysis
+| Provide data to be consumed for reporting & Analytics
+
+|*Object Type*
+| Tables
+| Tables
+| Views
+
+|*Load Method*
+| Full Load (Truncate & Insert)
+| Full Load (Truncate & Insert)
+| None
+
+|*Data Transformation*
+| None (as-is)
+| Data Cleaning +
+Data Standardization +
+Data Normalization +
+Derived Columns +
+Data Enrichment
+| Data Integration +
+Data Aggregation +
+Business Logic & Rules
+
+|*Data Modeling*
+| None (as-is)
+| None (as-is)
+| Star Schema +
+Aggregated Objects +
+Flat Tables
+
+|*Target Audience*
+| Data Engineers
+| Data Analysts +
+Data Engineers
+| Data Analysts +
+Business Users
+|===
+
+
+== Data Flow
+
+[mermaid,data_flow,png]
+----
+flowchart LR
+    d1-->b1 & b2 & b3
+    d2-->b4 & b5 & b6
+
+	subgraph Data Sources
+    d1@{ shape: doc, label: "CRM" }
+	d2@{ shape: doc, label: "ERP" }
+    end
+
+    subgraph Bronze Layer
+    b1@{ shape: div-rect, label: "crm_cust_info" }
+	b2@{ shape: div-rect, label: "crm_prd_inf" }
+	b3@{ shape: div-rect, label: "crm_sales_details" }
+    
+	b4@{ shape: div-rect, label: "erp_cust_az12" }
+	b5@{ shape: div-rect, label: "erp_loc_a101" }
+	b6@{ shape: div-rect, label: "erp_px_cat_g1v2" }
+    end
+----
+
+
+
