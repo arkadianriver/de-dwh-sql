@@ -164,26 +164,51 @@ Business Users
 
 == Data Flow
 
+Looking at the source data we have, this will be the flow to address our specifications.
+
 [mermaid,data_flow,png]
 ----
 flowchart LR
-    d1-->b1 & b2 & b3
-    d2-->b4 & b5 & b6
+    d1-->b1:::bronze & b2:::bronze & b3:::bronze
+    d2-->b4:::bronze & b5:::bronze & b6:::bronze
+    b1:::bronze-->s1:::silver
+    b2:::bronze-->s2:::silver
+    b3:::bronze-->s3:::silver
+    b4:::bronze-->s4:::silver
+    b5:::bronze-->s5:::silver
+    b6:::bronze-->s6:::silver
 
-	subgraph Data Sources
+  subgraph Data Sources
     d1@{ shape: doc, label: "CRM" }
-	d2@{ shape: doc, label: "ERP" }
-    end
+    d2@{ shape: doc, label: "ERP" }
+  end
 
-    subgraph Bronze Layer
+  subgraph subb [Bronze Layer]
     b1@{ shape: div-rect, label: "crm_cust_info" }
-	b2@{ shape: div-rect, label: "crm_prd_inf" }
-	b3@{ shape: div-rect, label: "crm_sales_details" }
-    
-	b4@{ shape: div-rect, label: "erp_cust_az12" }
-	b5@{ shape: div-rect, label: "erp_loc_a101" }
-	b6@{ shape: div-rect, label: "erp_px_cat_g1v2" }
-    end
+    b2@{ shape: div-rect, label: "crm_prd_inf" }
+    b3@{ shape: div-rect, label: "crm_sales_details" }
+  
+    b4@{ shape: div-rect, label: "erp_cust_az12" }
+    b5@{ shape: div-rect, label: "erp_loc_a101" }
+    b6@{ shape: div-rect, label: "erp_px_cat_g1v2" }
+  end
+  
+  subgraph subs [Silver Layer]
+    s1@{ shape: div-rect, label: "crm_cust_info" }
+    s2@{ shape: div-rect, label: "crm_prd_inf" }
+    s3@{ shape: div-rect, label: "crm_sales_details" }
+  
+    s4@{ shape: div-rect, label: "erp_cust_az12" }
+    s5@{ shape: div-rect, label: "erp_loc_a101" }
+    s6@{ shape: div-rect, label: "erp_px_cat_g1v2" }
+  end
+  
+  classDef bronze fill:#fa6,stroke:#333;
+  classDef silver fill:#dde,stroke:#333;
+  classDef gold   fill:#ff6,stroke:#333;
+  class subb bronze
+  class subs silver
+
 ----
 
 
