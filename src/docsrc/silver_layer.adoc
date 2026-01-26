@@ -61,7 +61,7 @@ and Postgres syntax, we add this column to the create script:
     dwh_created     TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
 ----
 
-=== `crm_cust_info` table
+=== CRM customer info table
 
 Next, we gotta check the data quality of the bronze tables.
 
@@ -138,7 +138,7 @@ In addition to *removing duplicates in primary keys*, we will do things like:
 - *Data normalization or standardization*, e.g. consistency of values in low cardinality columns
 - *Handling missing values appropriately*, e.g. replacing NULLs with 'Unknown' or default values
 
-=== `crm_prd_info` and `crm_sales_details` tables
+=== CRM product info and sales tables
 
 For the `crm_prd_info` table, we will, in addition:
 
@@ -157,7 +157,7 @@ The rules Baraa came up with are:
 - If price is zero or null, derive it from sales / quantity (or null if 0 quantity to prevent div by 0)
 - If prices is negative, set it to absolute value (positive)
 
-=== `erp_cust_az12`,`erp_loc_a101`, and `erp_px_cat_g1v2` tables
+=== ERP tables
 
 In addition to deriving a valid foreign key to `crm_cust_info`,
 there are birthdays that are in the future and as old as 1917!

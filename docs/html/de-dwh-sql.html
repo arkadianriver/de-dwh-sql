@@ -466,9 +466,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_data_integration_analysis_and_sketch">Data integration analysis and sketch</a></li>
 <li><a href="#_coding_the_transformations">Coding the transformations</a>
 <ul class="sectlevel3">
-<li><a href="#_crm_cust_info_table"><code>crm_cust_info</code> table</a></li>
-<li><a href="#_crm_prd_info_and_crm_sales_details_tables"><code>crm_prd_info</code> and <code>crm_sales_details</code> tables</a></li>
-<li><a href="#_erp_cust_az12erp_loc_a101_and_erp_px_cat_g1v2_tables"><code>erp_cust_az12</code>,<code>erp_loc_a101</code>, and <code>erp_px_cat_g1v2</code> tables</a></li>
+<li><a href="#_crm_customer_info_table">CRM customer info table</a></li>
+<li><a href="#_crm_product_info_and_sales_tables">CRM product info and sales tables</a></li>
+<li><a href="#_erp_tables">ERP tables</a></li>
 </ul>
 </li>
 </ul>
@@ -796,7 +796,7 @@ and Postgres syntax, we add this column to the create script:</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_crm_cust_info_table"><code>crm_cust_info</code> table</h4>
+<h4 id="_crm_customer_info_table">CRM customer info table</h4>
 <div class="paragraph">
 <p>Next, we gotta check the data quality of the bronze tables.</p>
 </div>
@@ -907,7 +907,7 @@ They will include comments where things aren&#8217;t clear.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_crm_prd_info_and_crm_sales_details_tables"><code>crm_prd_info</code> and <code>crm_sales_details</code> tables</h4>
+<h4 id="_crm_product_info_and_sales_tables">CRM product info and sales tables</h4>
 <div class="paragraph">
 <p>For the <code>crm_prd_info</code> table, we will, in addition:</p>
 </div>
@@ -948,7 +948,7 @@ bad values.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_erp_cust_az12erp_loc_a101_and_erp_px_cat_g1v2_tables"><code>erp_cust_az12</code>,<code>erp_loc_a101</code>, and <code>erp_px_cat_g1v2</code> tables</h4>
+<h4 id="_erp_tables">ERP tables</h4>
 <div class="paragraph">
 <p>In addition to deriving a valid foreign key to <code>crm_cust_info</code>,
 there are birthdays that are in the future and as old as 1917!
