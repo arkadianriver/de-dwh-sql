@@ -8,6 +8,11 @@ of the overall data strategy.
 
 == ETL task breakdown
 
+These are the tasks in the ETL process. I'd go over this with stakeholders
+to see what's required. For this exercise, Baraa wants us to do the tasks
+highlighted in pink. (We'll do the entire _Transformation_ section and its
+subtasks.)
+
 [plantuml,etl-mindmap,png]
 ----
 @startmindmap
