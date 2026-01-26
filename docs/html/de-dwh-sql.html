@@ -464,6 +464,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_silver_layer">Silver layer</a>
 <ul class="sectlevel2">
 <li><a href="#_data_integration_analysis_and_sketch">Data integration analysis and sketch</a></li>
+<li><a href="#_coding_the_transformations">Coding the transformations</a>
+<ul class="sectlevel3">
+<li><a href="#_crm_cust_info_table"><code>crm_cust_info</code> table</a></li>
+<li><a href="#_crm_prd_info_and_crm_sales_details_tables"><code>crm_prd_info</code> and <code>crm_sales_details</code> tables</a></li>
+<li><a href="#_erp_cust_az12erp_loc_a101_and_erp_px_cat_g1v2_tables"><code>erp_cust_az12</code>,<code>erp_loc_a101</code>, and <code>erp_px_cat_g1v2</code> tables</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#_gold_layer">Gold layer</a></li>
@@ -724,9 +731,12 @@ Business Users</p></td>
 </div>
 <div class="sect2">
 <h3 id="_data_flow">Data Flow</h3>
+<div class="paragraph">
+<p>Looking at the source data we have, this will be the flow to address our specifications.</p>
+</div>
 <div class="imageblock">
 <div class="content">
-<img src="data_flow.png" alt="data flow" width="380" height="617">
+<img src="data_flow.png" alt="data flow" width="623" height="617">
 </div>
 </div>
 </div>
@@ -770,6 +780,189 @@ Business Users</p></td>
 <div class="imageblock">
 <div class="content">
 <img src="silver_analysis.png" alt="silver analysis" width="843" height="259">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_coding_the_transformations">Coding the transformations</h3>
+<div class="paragraph">
+<p>Add metadata columns to track data lineage and help with debugging.
+We&#8217;ll add a <code>created</code> column to each silver table. Following the data engineer naming conventions,
+and Postgres syntax, we add this column to the create script:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sql" data-lang="sql">    dwh_created     TIMESTAMP DEFAULT CURRENT_TIMESTAMP;</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_crm_cust_info_table"><code>crm_cust_info</code> table</h4>
+<div class="paragraph">
+<p>Next, we gotta check the data quality of the bronze tables.</p>
+</div>
+<div class="paragraph">
+<p>First, we&#8217;ll check for nulls in the primary key columns.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sql" data-lang="sql">select cst_id, count(*) from bronze.crm_cust_info
+group by cst_id having count(*) &gt; 1 or cst_id is null;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Reveals some duplicates.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="media/dupe-keys-0.png" alt="Duplicate keys found">
+</div>
+</div>
+<div class="paragraph">
+<p>Focus on one to see what the problem is.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sql" data-lang="sql">select * from bronze.crm_cust_info
+where cst_id = '29466';</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Results:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="media/dupe-keys-1.png" alt="Duplicate keys example">
+</div>
+</div>
+<div class="paragraph">
+<p>This shows that there are multiple entries with different dates.
+Since this data warehouse specification doesn&#8217;t need historical data,
+we&#8217;ll take the latest.</p>
+</div>
+<div class="paragraph">
+<p>But remember, we leave bronze the same and transform (clean) as we go.
+To do this, let&#8217;s grab the latest record per <code>cst_id</code> and rank them.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sql" data-lang="sql">select *, row_number() over (
+	partition by cst_id order by cst_create_date desc
+) as flag_last
+from bronze.crm_cust_info
+where cst_id = 29466;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We&#8217;ll apply this to the whole table to see if this same procedure
+flags all duplicates.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sql" data-lang="sql">select * from (
+    select *, row_number() over (
+    	partition by cst_id order by cst_create_date desc
+    ) as flag_last
+    from bronze.crm_cust_info
+) sub
+where flag_last != 1;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Checking against the duplicates found earlier, when we change <code>flag_last = 1</code>,
+we see that all duplicates are removed.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sql" data-lang="sql">select * from (
+    select *, row_number() over (
+    	partition by cst_id order by cst_create_date desc
+    ) as flag_last
+    from bronze.crm_cust_info
+) sub
+where flag_last = 1;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>That&#8217;s just one example of data cleaning in the silver layer.</p>
+</div>
+<div class="paragraph">
+<p>See the <code>src/silver</code> folder for the full SQL scripts.
+They will include comments where things aren&#8217;t clear.</p>
+</div>
+<div class="paragraph">
+<p>In addition to <strong>removing duplicates in primary keys</strong>, we will do things like:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Remove unwanted spaces in text fields</strong></p>
+</li>
+<li>
+<p><strong>Data normalization or standardization</strong>, e.g. consistency of values in low cardinality columns</p>
+</li>
+<li>
+<p><strong>Handling missing values appropriately</strong>, e.g. replacing NULLs with 'Unknown' or default values</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_crm_prd_info_and_crm_sales_details_tables"><code>crm_prd_info</code> and <code>crm_sales_details</code> tables</h4>
+<div class="paragraph">
+<p>For the <code>crm_prd_info</code> table, we will, in addition:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Derive new columns</strong>, e.g. extracting category from product codes</p>
+</li>
+<li>
+<p><strong>Data type conversions</strong>, e.g. casting timestamps with <code>00:00:00</code> times to date</p>
+</li>
+<li>
+<p><strong>Data enrichment</strong>, e.g. making sales end dates make sense and not overlap with start dates</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For the <code>crm_sales_details</code> table, the sales, quantity, and price columns are tricky.
+After doing some quality checks, we discover quite a few places where things don&#8217;t add up.
+Before doing <strong>data enrichment</strong>, we would verify with the data owner what to do with these
+bad values.</p>
+</div>
+<div class="paragraph">
+<p>The rules Baraa came up with are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>If sales is negative, zero, null, or not equal to derived sales from quantity * price, set it to derived value</p>
+</li>
+<li>
+<p>If price is zero or null, derive it from sales / quantity (or null if 0 quantity to prevent div by 0)</p>
+</li>
+<li>
+<p>If prices is negative, set it to absolute value (positive)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_erp_cust_az12erp_loc_a101_and_erp_px_cat_g1v2_tables"><code>erp_cust_az12</code>,<code>erp_loc_a101</code>, and <code>erp_px_cat_g1v2</code> tables</h4>
+<div class="paragraph">
+<p>In addition to deriving a valid foreign key to <code>crm_cust_info</code>,
+there are birthdays that are in the future and as old as 1917!
+After consulting the data owner, we decide to set future birthdays
+to null and leaving old birthdays as is.</p>
+</div>
+<div class="paragraph">
+<p>For the <code>erp_loc_a101</code> table, besides deriving the foreign key,
+we also normalize the country fields.</p>
+</div>
+<div class="paragraph">
+<p>For the <code>erp_px_cat_g1v2</code> table, we already derived a category id
+column in the cust_prod_info silver table that matches the id, and
+when checking spaces, standardization, and consistency, we find no issues.</p>
 </div>
 </div>
 </div>
