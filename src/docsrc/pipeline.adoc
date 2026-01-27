@@ -1,0 +1,20 @@
+= Pipeline
+
+The ETL pipeline (`pipeline.sh`) is run with Bash, calling SQL scripts run with psql, with output
+to the command line and a log in `/tmp/de-dwh-sql`.
+
+To run the full pipeline:
+
+```
+sudo -u postgres ./pipeline.sh full
+```
+
+There are other options besides 'full', if you want to run isolated stages of the pipeline.
+Here are the stages each option runs:
+
+[source,bash]
+----
+include::../../pipeline.sh[tag=options]
+----
+
+

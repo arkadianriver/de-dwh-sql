@@ -5,6 +5,7 @@
 include::prepare.adoc[leveloffset=+1]
 include::docs.adoc[leveloffset=+1]
 include::architecture.adoc[leveloffset=+1]
+include::pipeline.adoc[leveloffset=+1]
 include::bronze_layer.adoc[leveloffset=+1]
 include::silver_layer.adoc[leveloffset=+1]
 include::gold_layer.adoc[leveloffset=+1]

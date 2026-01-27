@@ -460,6 +460,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_data_flow">Data Flow</a></li>
 </ul>
 </li>
+<li><a href="#_pipeline">Pipeline</a>
+<ul class="sectlevel2">
+<li><a href="#_etl_task_breakdown_2">ETL task breakdown</a></li>
+<li><a href="#_specifications_2">Specifications</a></li>
+<li><a href="#_data_flow_2">Data Flow</a></li>
+</ul>
+</li>
 <li><a href="#_bronze_layer">Bronze layer</a></li>
 <li><a href="#_silver_layer">Silver layer</a>
 <ul class="sectlevel2">
@@ -749,6 +756,184 @@ Business Users</p></td>
 </div>
 </div>
 <div class="sect1">
+<h2 id="_pipeline">Pipeline</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The ETL pipeline (<code>pipeline.sh</code>) is run with Bash, calling SQL scripts run with psql, with output
+to the command line and a log in <code>/tmp/de-dwh-sql</code>.</p>
+</div>
+<div class="paragraph">
+<p>To run the full pipeline:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>sudo -u postgres ./pipeline.sh full</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>There are other options besides 'full', if you want to run isolated stages of the pipeline.
+Here are the stages each option runs:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">case $1 in
+    "init")
+        init_db
+        ;;
+    "bronze-create")
+        bronze_create
+        ;;
+    "bronze-load")
+        bronze_load
+        ;;
+    "bronze-all")
+        bronze_create
+        bronze_load
+        ;;
+    "silver-create")
+        silver_create
+        ;;
+    "silver-load")
+        silver_load
+        ;;
+    "silver-validate")
+        silver_validate
+        ;;
+    "silver-all")
+        silver_create
+        silver_load
+        silver_validate
+        ;;
+    "gold-load")
+        gold_load
+        ;;
+    "gold-validate")
+        gold_validate
+        ;;
+    "gold-all")
+        gold_create
+        gold_load
+        gold_validate
+        ;;
+    "full")
+        init_db
+        bronze_create
+        bronze_load
+        silver_create
+        silver_load
+        silver_validate
+        gold_create
+        gold_load
+        gold_validate
+        ;;
+    *)  echo -ne "\nUsage: $0 {init\n  |bronze-create|bronze-load|bronze-all\n  |silver-create|silver-load|silver-validate|silver-all\n  |full}\n"
+esac</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_etl_task_breakdown_2">ETL task breakdown</h3>
+<div class="paragraph">
+<p>These are the tasks in the ETL process. I&#8217;d go over this with stakeholders
+to see what&#8217;s required. For this exercise, Baraa wants us to do the tasks
+highlighted in pink. (We&#8217;ll do the entire <em>Transformation</em> section and its
+subtasks.)</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="etl-mindmap.png" alt="etl mindmap" width="1674" height="1044">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_specifications_2">Specifications</h3>
+<div class="paragraph">
+<p>Given the chosen tasks in the ETL process, we have the following specifications.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 18.1818%;">
+<col style="width: 27.2727%;">
+<col style="width: 27.2727%;">
+<col style="width: 27.2728%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Category</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Bronze Layer</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Silver Layer</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Gold Layer</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Definition</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Raw, unprocessed data as-is from sources</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Clean &amp; standardized data</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Business-Ready data</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Objective</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Traceability &amp; Debugging</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(Intermediate Layer) Prepare Data for Analysis</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Provide data to be consumed for reporting &amp; Analytics</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Object Type</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tables</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tables</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Views</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Load Method</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Full Load (Truncate &amp; Insert)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Full Load (Truncate &amp; Insert)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">None</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Data Transformation</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">None (as-is)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Data Cleaning<br>
+Data Standardization<br>
+Data Normalization<br>
+Derived Columns<br>
+Data Enrichment</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Data Integration<br>
+Data Aggregation<br>
+Business Logic &amp; Rules</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Data Modeling</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">None (as-is)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">None (as-is)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Star Schema<br>
+Aggregated Objects<br>
+Flat Tables</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Target Audience</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Data Engineers</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Data Analysts<br>
+Data Engineers</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Data Analysts<br>
+Business Users</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_data_flow_2">Data Flow</h3>
+<div class="paragraph">
+<p>Looking at the source data we have, this will be the flow to address our specifications.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="data_flow.png" alt="data flow" width="623" height="617">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_bronze_layer">Bronze layer</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -811,7 +996,9 @@ and Postgres syntax, we add this column to the create script:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-sql" data-lang="sql">select cst_id, count(*) from bronze.crm_cust_info
+<pre class="highlight"><code class="language-sql" data-lang="sql">\c datawarehouse
+
+select cst_id, count(*) from bronze.crm_cust_info
 group by cst_id having count(*) &gt; 1 or cst_id is null;</code></pre>
 </div>
 </div>
@@ -1004,7 +1191,7 @@ when checking spaces, standardization, and consistency, we find no issues.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-01-25 13:33:35 -0600
+Last updated 2026-01-26 23:23:07 -0600
 </div>
 </div>
 </body>

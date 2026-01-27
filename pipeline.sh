@@ -1,0 +1,145 @@
+#!/bin/bash
+#
+# Run as postgres user, e.g.:
+#
+#     sudo -u postgres ./pipeline.sh full
+#
+# Errors are handled:
+#   - in psql by the ON_ERROR_STOP setting
+#   - in SQL by using a RAISE statement in stored procedures when validation SELECT values aren't as expected (TODO)
+#   - in bash by checking $? after each psql call in `check_error()`
+#     (rather than `set -e`, which wouldn't allow subsequent actions such as notifying me)
+#     (maybe a calling script could use `set -e`, such as one in a GitHub action script)
+#
+
+set -o pipefail
+
+logroot=/tmp/de-dwh-sql
+mkdir -p $logroot
+tstamp=$(date +%Y-%m-%d_%H%M%S)
+
+erron='-v ON_ERROR_STOP=ON'
+
+check_error ()
+{
+    rc=$?
+    if [ $rc -ne 0 ]; then
+        echo ERROR!!!! RC=$rc
+        echo email sent to Data Engineer.
+        exit 1
+    fi
+}
+
+psql_task ()
+{
+    psql -v schema=$2 -v ON_ERROR_STOP=on -f $1 2>&1 | tee "${logroot}/${tstamp}.log";
+    check_error
+}
+
+init_db ()
+{
+    psql_task ./src/init_database.sql
+}
+
+bronze_create ()
+{
+    psql_task ./src/bronze/ddl_bronze.sql
+}
+
+bronze_load ()
+{
+    psql_task ./src/bronze/load_bronze.sql
+}
+
+silver_create ()
+{
+    psql_task ./src/silver/ddl_silver.sql
+}
+
+silver_load ()
+{
+    #psql_task ./src/silver/load_silver.sql
+    placeholder for silver load
+}
+
+silver_validate ()
+{
+    psql_task ./src/silver/qry_check_for_dupe_keys.sql
+    echo remember to change to silver after load
+}
+
+gold_create ()
+{
+    #psql_task ./src/gold/ddl_gold.sql
+    echo placeholder for gold create
+}
+
+gold_load ()
+{
+    #psql_task ./src/gold/load_gold.sql
+    echo placeholder for gold load
+}
+
+gold_validate ()
+{
+    #psql_task ./src/gold/validate_gold.sql
+    echo placeholder for gold validation
+}
+
+SECONDS=0
+# tag::options[]
+case $1 in
+    "init")
+        init_db
+        ;;
+    "bronze-create")
+        bronze_create
+        ;;
+    "bronze-load")
+        bronze_load
+        ;;
+    "bronze-all")
+        bronze_create
+        bronze_load
+        ;;
+    "silver-create")
+        silver_create
+        ;;
+    "silver-load")
+        silver_load
+        ;;
+    "silver-validate")
+        silver_validate
+        ;;
+    "silver-all")
+        silver_create
+        silver_load
+        silver_validate
+        ;;
+    "gold-load")
+        gold_load
+        ;;
+    "gold-validate")
+        gold_validate
+        ;;
+    "gold-all")
+        gold_create
+        gold_load
+        gold_validate
+        ;;
+    "full")
+        init_db
+        bronze_create
+        bronze_load
+        silver_create
+        silver_load
+        silver_validate
+        gold_create
+        gold_load
+        gold_validate
+        ;;
+    *)  echo -ne "\nUsage: $0 {init\n  |bronze-create|bronze-load|bronze-all\n  |silver-create|silver-load|silver-validate|silver-all\n  |full}\n"
+esac
+# end::options[]
+
+echo -ne "\n=================================\nElapsed time: $SECONDS seconds\n=================================\n" | tee -a "${logroot}/${tstamp}-0-all.log"
