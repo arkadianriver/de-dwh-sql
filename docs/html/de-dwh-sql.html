@@ -460,13 +460,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_data_flow">Data Flow</a></li>
 </ul>
 </li>
-<li><a href="#_pipeline">Pipeline</a>
-<ul class="sectlevel2">
-<li><a href="#_etl_task_breakdown_2">ETL task breakdown</a></li>
-<li><a href="#_specifications_2">Specifications</a></li>
-<li><a href="#_data_flow_2">Data Flow</a></li>
-</ul>
-</li>
+<li><a href="#_pipeline">Pipeline</a></li>
 <li><a href="#_bronze_layer">Bronze layer</a></li>
 <li><a href="#_silver_layer">Silver layer</a>
 <ul class="sectlevel2">
@@ -828,107 +822,6 @@ Here are the stages each option runs:</p>
         ;;
     *)  echo -ne "\nUsage: $0 {init\n  |bronze-create|bronze-load|bronze-all\n  |silver-create|silver-load|silver-validate|silver-all\n  |full}\n"
 esac</code></pre>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_etl_task_breakdown_2">ETL task breakdown</h3>
-<div class="paragraph">
-<p>These are the tasks in the ETL process. I&#8217;d go over this with stakeholders
-to see what&#8217;s required. For this exercise, Baraa wants us to do the tasks
-highlighted in pink. (We&#8217;ll do the entire <em>Transformation</em> section and its
-subtasks.)</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="etl-mindmap.png" alt="etl mindmap" width="1674" height="1044">
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_specifications_2">Specifications</h3>
-<div class="paragraph">
-<p>Given the chosen tasks in the ETL process, we have the following specifications.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 18.1818%;">
-<col style="width: 27.2727%;">
-<col style="width: 27.2727%;">
-<col style="width: 27.2728%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top"><strong>Category</strong></th>
-<th class="tableblock halign-left valign-top"><strong>Bronze Layer</strong></th>
-<th class="tableblock halign-left valign-top"><strong>Silver Layer</strong></th>
-<th class="tableblock halign-left valign-top"><strong>Gold Layer</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Definition</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Raw, unprocessed data as-is from sources</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Clean &amp; standardized data</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Business-Ready data</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Objective</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Traceability &amp; Debugging</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">(Intermediate Layer) Prepare Data for Analysis</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Provide data to be consumed for reporting &amp; Analytics</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Object Type</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Tables</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Tables</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Views</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Load Method</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Full Load (Truncate &amp; Insert)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Full Load (Truncate &amp; Insert)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">None</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Data Transformation</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">None (as-is)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Data Cleaning<br>
-Data Standardization<br>
-Data Normalization<br>
-Derived Columns<br>
-Data Enrichment</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Data Integration<br>
-Data Aggregation<br>
-Business Logic &amp; Rules</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Data Modeling</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">None (as-is)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">None (as-is)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Star Schema<br>
-Aggregated Objects<br>
-Flat Tables</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Target Audience</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Data Engineers</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Data Analysts<br>
-Data Engineers</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Data Analysts<br>
-Business Users</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect2">
-<h3 id="_data_flow_2">Data Flow</h3>
-<div class="paragraph">
-<p>Looking at the source data we have, this will be the flow to address our specifications.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="data_flow.png" alt="data flow" width="623" height="617">
-</div>
 </div>
 </div>
 </div>
