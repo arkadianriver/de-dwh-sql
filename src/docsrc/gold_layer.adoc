@@ -11,7 +11,7 @@ to group things logically.
 ----
 @startuml
 
-package CRM {
+package CRM <<Rectangle>> {
     map crm_sales_details {
         cst_id =>
         prd_key =>
@@ -30,7 +30,7 @@ package CRM {
     crm_sales_details::prd_key --> crm_prd_inf::prd_key
 }
 
-package ERP {
+package ERP <<Rectangle>> {
     map erp_cust_az12 {
         cid =>
 		**>** => **Customer**
@@ -68,3 +68,58 @@ LEFT JOIN gold.customers c ON f.customer_key = c.customer_key
 LEFT JOIN gold.products c ON f.product_key = c.product_key
 WHERE p.product_key IS NULL OR c.customer_key IS NULL;
 ```
+
+After coding the gold layer, we end up with this data model of the star schema:
+
+[plantuml,gold_star,png]
+----
+@startuml
+
+left to right direction
+
+package gold <<Rectangle>> {
+
+    map gold.dim_customers {
+        customer_key => PK
+        customer_id =>
+        first_name =>
+        last_name =>
+        country =>
+        marital_status =>
+        gender =>
+        birth_date =>
+        create_date =>
+    }
+
+    map gold.facts_sales {
+        order_number =>
+        product_key => FK
+        customer_key => FK
+        order_date =>
+        shipping_date =>
+        due_date =>
+        sales_amount =>
+        quantity =>
+        price =>
+    }
+
+    map gold.dim_products {
+        product_key => PK
+        product_id =>
+        product_number =>
+        product_name =>
+        category_id =>
+        category =>
+        subcategory =>
+        maintenance =>
+        cost =>
+        product_line =>
+        start_date =>
+    }
+}
+
+gold.facts_sales::customer_key }o--|| gold.dim_customers::customer_key
+gold.facts_sales::product_key }o--|| gold.dim_products::product_key
+
+@enduml
+----
