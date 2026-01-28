@@ -889,10 +889,8 @@ and Postgres syntax, we add this column to the create script:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-sql" data-lang="sql">\c datawarehouse
-
-select cst_id, count(*) from bronze.crm_cust_info
-group by cst_id having count(*) &gt; 1 or cst_id is null;</code></pre>
+<pre class="highlight"><code class="language-sql" data-lang="sql">		select cst_id, count(*) from silver.crm_cust_info
+		group by cst_id having count(*) &gt; 1 or cst_id is null</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -957,23 +955,9 @@ where flag_last != 1;</code></pre>
 <p>Checking against the duplicates found earlier, when we change <code>flag_last = 1</code>,
 we see that all duplicates are removed.</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-sql" data-lang="sql">select * from (
-    select *, row_number() over (
-    	partition by cst_id order by cst_create_date desc
-    ) as flag_last
-    from bronze.crm_cust_info
-) sub
-where flag_last = 1;</code></pre>
-</div>
-</div>
 <div class="paragraph">
-<p>That&#8217;s just one example of data cleaning in the silver layer.</p>
-</div>
-<div class="paragraph">
-<p>See the <code>src/silver</code> folder for the full SQL scripts.
-They will include comments where things aren&#8217;t clear.</p>
+<p>That&#8217;s just one example of data cleaning in the silver layer.
+See the <code>src/silver</code> folder for the full SQL scripts.</p>
 </div>
 <div class="paragraph">
 <p>In addition to <strong>removing duplicates in primary keys</strong>, we will do things like:</p>
@@ -1058,26 +1042,18 @@ when checking spaces, standardization, and consistency, we find no issues.</p>
 <h2 id="_gold_layer">Gold layer</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The Gold layer represents the final stage in the data pipeline, where data is fully refined and optimized for business intelligence and analytics. In this layer, data from the Silver layer is aggregated, summarized, and structured to meet specific reporting and analytical needs.</p>
+<p>The Gold layer represents the final stage in the data pipeline, where the data is refined and optimized for business intelligence and analytics,
+separated into facts and dimensions.
+For this project, the star schema model is sufficient as there are only a couple of product and customer <em>dimensions</em> surrounding the sales orders <em>facts</em>.</p>
 </div>
 <div class="paragraph">
-<p>The key functions of the Gold layer include:</p>
+<p>First step on how to determine how to build our gold data model is to examine the silver data model and add some labels
+to group things logically.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>Data Aggregation: Summarizing data to provide high-level insights, such as totals, averages, and other key performance indicators (KPIs).</p>
-</li>
-<li>
-<p>Data Structuring: Organizing data into star or snowflake schemas to facilitate efficient querying and reporting.</p>
-</li>
-<li>
-<p>Data Optimization: Enhancing performance through indexing, partitioning, and other techniques to ensure fast access to critical information.</p>
-</li>
-</ul>
+<div class="imageblock">
+<div class="content">
+<img src="silver_into_categories.png" alt="silver into categories" width="935" height="301">
 </div>
-<div class="paragraph">
-<p>By implementing these processes in the Gold layer, we ensure that the data is not only accurate and reliable but also tailored to support strategic decision-making and advanced analytics across the organization.</p>
 </div>
 </div>
 </div>

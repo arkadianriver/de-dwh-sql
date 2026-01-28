@@ -1,11 +1,53 @@
 = Gold layer
 
-The Gold layer represents the final stage in the data pipeline, where data is fully refined and optimized for business intelligence and analytics. In this layer, data from the Silver layer is aggregated, summarized, and structured to meet specific reporting and analytical needs.
+The Gold layer represents the final stage in the data pipeline, where the data is refined and optimized for business intelligence and analytics,
+separated into facts and dimensions.
+For this project, the star schema model is sufficient as there are only a couple of product and customer _dimensions_ surrounding the sales orders _facts_.
 
-The key functions of the Gold layer include:
+First step on how to determine how to build our gold data model is to examine the silver data model and add some labels
+to group things logically.
 
-* Data Aggregation: Summarizing data to provide high-level insights, such as totals, averages, and other key performance indicators (KPIs).
-* Data Structuring: Organizing data into star or snowflake schemas to facilitate efficient querying and reporting.
-* Data Optimization: Enhancing performance through indexing, partitioning, and other techniques to ensure fast access to critical information.
+[plantuml,silver_into_categories,png]
+----
+@startuml
 
-By implementing these processes in the Gold layer, we ensure that the data is not only accurate and reliable but also tailored to support strategic decision-making and advanced analytics across the organization.
+package CRM {
+    map crm_sales_details {
+        cst_id =>
+        prd_key =>
+		**>** => **Sales**
+    }
+    map crm_cust_info {
+        cst_id =>
+        cst_key =>
+		**>** => **Customer**
+    }
+    map crm_prd_inf {
+        prd_key =>
+		**>** => **Product**
+    }
+    crm_sales_details::cst_id --> crm_cust_info::cst_id
+    crm_sales_details::prd_key --> crm_prd_inf::prd_key
+}
+
+package ERP {
+    map erp_cust_az12 {
+        cid =>
+		**>** => **Customer**
+    }
+    map erp_loc_a101 {
+        cid =>
+		**>** => **Customer**
+    }
+    map erp_px_cat_g1v2 {
+        id =>
+		**>** => **Product**
+    }
+    erp_cust_az12::cid --> crm_cust_info::cst_key
+    erp_loc_a101::cid --> crm_cust_info::cst_key
+    erp_px_cat_g1v2::prd_key --> crm_prd_inf::prd_key
+}
+
+@enduml
+----
+
