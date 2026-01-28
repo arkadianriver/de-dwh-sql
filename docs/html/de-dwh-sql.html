@@ -798,15 +798,14 @@ Here are the stages each option runs:</p>
         silver_load
         silver_validate
         ;;
-    "gold-load")
-        gold_load
+    "gold-create")
+        gold_create
         ;;
     "gold-validate")
         gold_validate
         ;;
     "gold-all")
         gold_create
-        gold_load
         gold_validate
         ;;
     "full")
@@ -817,10 +816,9 @@ Here are the stages each option runs:</p>
         silver_load
         silver_validate
         gold_create
-        gold_load
         gold_validate
         ;;
-    *)  echo -ne "\nUsage: $0 {init\n  |bronze-create|bronze-load|bronze-all\n  |silver-create|silver-load|silver-validate|silver-all\n  |full}\n"
+    *)  echo -ne "\nUsage: $0 {init\n  |bronze-create|bronze-load|bronze-all\n  |silver-create|silver-load|silver-validate|silver-all\n  |gold-create|gold-validate|gold-all|full}\n"
 esac</code></pre>
 </div>
 </div>
@@ -1053,6 +1051,28 @@ to group things logically.</p>
 <div class="imageblock">
 <div class="content">
 <img src="silver_into_categories.png" alt="silver into categories" width="935" height="301">
+</div>
+</div>
+<div class="paragraph">
+<p>Referring back to the <a href="#_specifications">Specifications</a>, we see that rather than loading data,
+we&#8217;ll be creating views into the cleaned silver tables, views that might aggregate and integrate information.</p>
+</div>
+<div class="paragraph">
+<p>Another thing to add to the views are surrogate keys to use as the primary keys.
+TIL that these are exposed in the fact view SELECTs, while it&#8217;s fact view JOINs that create
+the links between the relevant columns gold views (rather than using those columns as foreign keys).
+Only after JOINing the fact table are the foreign keys resolved.
+That&#8217;s why it seemed that the surrogates could be sorted however you want. (I think.)</p>
+</div>
+<div class="paragraph">
+<p>To verify the joins (foreign key integrity) execute joins on the keys and see if any keys are NULL:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>SELECT COUNT(*) FROM gold.fact_sales f
+LEFT JOIN gold.customers c ON f.customer_key = c.customer_key
+LEFT JOIN gold.products c ON f.product_key = c.product_key
+WHERE p.product_key IS NULL OR c.customer_key IS NULL;</code></pre>
 </div>
 </div>
 </div>

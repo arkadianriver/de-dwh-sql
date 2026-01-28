@@ -79,20 +79,12 @@ silver_validate ()
 
 gold_create ()
 {
-    #psql_task ./src/gold/ddl_gold.sql
-    echo placeholder for gold create
-}
-
-gold_load ()
-{
-    #psql_task ./src/gold/load_gold.sql
-    echo placeholder for gold load
+    psql_task ./src/gold/ddl_gold.sql
 }
 
 gold_validate ()
 {
-    #psql_task ./src/gold/validate_gold.sql
-    echo placeholder for gold validation
+    psql_task ./src/gold/validate_gold.sql
 }
 
 SECONDS=0
@@ -125,15 +117,14 @@ case $1 in
         silver_load
         silver_validate
         ;;
-    "gold-load")
-        gold_load
+    "gold-create")
+        gold_create
         ;;
     "gold-validate")
         gold_validate
         ;;
     "gold-all")
         gold_create
-        gold_load
         gold_validate
         ;;
     "full")
@@ -144,10 +135,9 @@ case $1 in
         silver_load
         silver_validate
         gold_create
-        gold_load
         gold_validate
         ;;
-    *)  echo -ne "\nUsage: $0 {init\n  |bronze-create|bronze-load|bronze-all\n  |silver-create|silver-load|silver-validate|silver-all\n  |full}\n"
+    *)  echo -ne "\nUsage: $0 {init\n  |bronze-create|bronze-load|bronze-all\n  |silver-create|silver-load|silver-validate|silver-all\n  |gold-create|gold-validate|gold-all|full}\n"
 esac
 # end::options[]
 

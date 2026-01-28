@@ -51,3 +51,20 @@ package ERP {
 @enduml
 ----
 
+Referring back to the xref:architecture.adoc#_specifications[], we see that rather than loading data,
+we'll be creating views into the cleaned silver tables, views that might aggregate and integrate information.
+
+Another thing to add to the views are surrogate keys to use as the primary keys.
+TIL that these are exposed in the fact view SELECTs, while it's fact view JOINs that create
+the links between the relevant columns gold views (rather than using those columns as foreign keys).
+Only after JOINing the fact table are the foreign keys resolved.
+That's why it seemed that the surrogates could be sorted however you want. (I think.)
+
+To verify the joins (foreign key integrity) execute joins on the keys and see if any keys are NULL:
+
+```
+SELECT COUNT(*) FROM gold.fact_sales f
+LEFT JOIN gold.customers c ON f.customer_key = c.customer_key
+LEFT JOIN gold.products c ON f.product_key = c.product_key
+WHERE p.product_key IS NULL OR c.customer_key IS NULL;
+```
