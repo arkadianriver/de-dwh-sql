@@ -69,7 +69,7 @@ First, we'll check for nulls in the primary key columns.
 
 [source,sql]
 ----
-include::../silver/qry_check_for_dupe_keys.sql[]
+include::../silver/validate_silver.sql[tag=check_nulls]
 ----
 
 
@@ -122,15 +122,8 @@ where flag_last != 1;
 Checking against the duplicates found earlier, when we change `flag_last = 1`,
 we see that all duplicates are removed.
 
-[source,sql]
-----
-include::../silver/qry_filter_out_dupes.sql[]
-----
-
 That's just one example of data cleaning in the silver layer.
-
 See the `src/silver` folder for the full SQL scripts.
-They will include comments where things aren't clear.
 
 In addition to *removing duplicates in primary keys*, we will do things like:
 

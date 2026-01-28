@@ -16,8 +16,10 @@
 DO $$
 BEGIN
 	IF EXISTS (
+		-- tag::check_nulls[]
 		select cst_id, count(*) from silver.crm_cust_info
 		group by cst_id having count(*) > 1 or cst_id is null
+		-- end::check_nulls[]
 	) THEN
 		RAISE EXCEPTION 'Duplicates or null values exist.';
 	ELSE
