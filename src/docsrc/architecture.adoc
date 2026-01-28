@@ -174,15 +174,6 @@ Looking at the source data we have, this will be the flow to address our specifi
 [mermaid,data_flow,png]
 ----
 flowchart LR
-    d1-->b1:::bronze & b2:::bronze & b3:::bronze
-    d2-->b4:::bronze & b5:::bronze & b6:::bronze
-    b1:::bronze-->s1:::silver
-    b2:::bronze-->s2:::silver
-    b3:::bronze-->s3:::silver
-    b4:::bronze-->s4:::silver
-    b5:::bronze-->s5:::silver
-    b6:::bronze-->s6:::silver
-
   subgraph Data Sources
     d1@{ shape: doc, label: "CRM" }
     d2@{ shape: doc, label: "ERP" }
@@ -208,11 +199,35 @@ flowchart LR
     s6@{ shape: div-rect, label: "erp_px_cat_g1v2" }
   end
   
+  subgraph subg [Gold Layer]
+    g1@{ shape: div-rect, label: "dim_products" }
+    g2@{ shape: div-rect, label: "dim_customers" }
+    g3@{ shape: div-rect, label: "facts_sales" }
+  end
+
+  d1--> b1:::bronze & b2:::bronze & b3:::bronze
+  d2--> b4:::bronze & b5:::bronze & b6:::bronze
+
+  b1:::bronze-->s1:::silver
+  b2:::bronze-->s2:::silver
+  b3:::bronze-->s3:::silver
+  b4:::bronze-->s4:::silver
+  b5:::bronze-->s5:::silver
+  b6:::bronze-->s6:::silver
+
+  s1:::silver-->g2:::gold
+  s2:::silver-->g1:::gold
+  s3:::silver-->g3:::gold
+  s4:::silver-->g2:::gold
+  s5:::silver-->g2:::gold
+  s6:::silver-->g1:::gold
+
   classDef bronze fill:#fa6,stroke:#333;
   classDef silver fill:#dde,stroke:#333;
   classDef gold   fill:#ff6,stroke:#333;
   class subb bronze
   class subs silver
+  class subg gold
 
 ----
 
