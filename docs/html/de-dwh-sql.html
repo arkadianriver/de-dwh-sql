@@ -475,6 +475,18 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </li>
 <li><a href="#_gold_layer">Gold layer</a></li>
+<li><a href="#data_catalog">The Data Catalog (gold layer)</a>
+<ul class="sectlevel2">
+<li><a href="#_overview">Overview</a></li>
+<li><a href="#_gold_dim_customers">gold.dim_customers</a>
+<ul class="sectlevel3">
+<li><a href="#_known_countries">Known countries</a></li>
+</ul>
+</li>
+<li><a href="#_gold_dim_products">gold.dim_products</a></li>
+<li><a href="#_gold_facts_sales">gold.facts_sales</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -1085,10 +1097,290 @@ WHERE p.product_key IS NULL OR c.customer_key IS NULL;</code></pre>
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="data_catalog">The Data Catalog (gold layer)</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_overview">Overview</h3>
+<div class="paragraph">
+<p>The Gold Layer is the business-level data representation, structured to support analytical and reporting use cases.
+It consists of <strong>dimension tables</strong> and <strong>fact tables</strong> for specific business metrics.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_gold_dim_customers">gold.dim_customers</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Purpose:</strong> Stores customer details enriched with demographic and geographic data.</p>
+</li>
+<li>
+<p><strong>Columns:</strong></p>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 13.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Column Name</th>
+<th class="tableblock halign-left valign-top">Data Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">customer_key</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">INT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Surrogate key uniquely identifying each customer record in the dimension table.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">customer_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">INT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unique numerical identifier assigned to each customer.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">customer_number</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VARCHAR(50)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Alphanumeric identifier representing the customer, used for tracking and referencing.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">first_name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VARCHAR(50)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The customer&#8217;s first name, as recorded in the system.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">last_name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VARCHAR(50)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The customer&#8217;s last name or family name.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">country</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VARCHAR(50)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The country of residence for the customer (See <a href="#_known_countries">Known countries</a>).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">marital_status</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VARCHAR(50)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The marital status of the customer (e.g., 'Married', 'Single').</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">gender</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VARCHAR(50)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The gender of the customer (Valid values: 'Male', 'Female', 'Unknown').</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">birthdate</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DATE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The date of birth of the customer, formatted as YYYY-MM-DD. (Oldest possible customer is 115 years old.)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">create_date</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DATE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The date and time when the customer record was created in the system</p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect3">
+<h4 id="_known_countries">Known countries</h4>
+<div class="paragraph">
+<p>The following countries are currently the only ones that exist in the data.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Australia</p>
+</li>
+<li>
+<p>Canada</p>
+</li>
+<li>
+<p>France</p>
+</li>
+<li>
+<p>Germany</p>
+</li>
+<li>
+<p>United Kingdom</p>
+</li>
+<li>
+<p>United States</p>
+</li>
+<li>
+<p>Unknown</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_gold_dim_products">gold.dim_products</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Purpose:</strong> Provides information about the products and their attributes.</p>
+</li>
+<li>
+<p><strong>Columns:</strong></p>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 13.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Column Name</th>
+<th class="tableblock halign-left valign-top">Data Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">product_key</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">INT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Surrogate key uniquely identifying each product record in the product dimension table.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">product_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">INT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A unique identifier assigned to the product for internal tracking and referencing.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">product_number</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VARCHAR(50)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A structured alphanumeric code representing the product, often used for categorization or inventory.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">product_name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VARCHAR(50)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Descriptive name of the product, including key details such as type, color, and size.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">category_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VARCHAR(50)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A unique identifier for the product&#8217;s category, linking to its high-level classification.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">category</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VARCHAR(50)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The broader classification of the product (e.g., Bikes, Components) to group related items.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">subcategory</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VARCHAR(50)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A more detailed classification of the product within the category, such as product type.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">maintenance_required</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VARCHAR(50)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Indicates whether the product requires maintenance (Valid values are 'Yes', 'No', 'Unknown').</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cost</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">INT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The cost or base price of the product, measured in monetary units.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">product_line</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VARCHAR(50)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The specific product line or series to which the product belongs (e.g., Road, Mountain).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">start_date</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DATE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The date when the product became available for sale or use, stored in.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_gold_facts_sales">gold.facts_sales</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Purpose:</strong> Stores transactional sales data for analytical purposes.</p>
+</li>
+<li>
+<p><strong>Columns:</strong></p>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 13.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Column Name</th>
+<th class="tableblock halign-left valign-top">Data Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">order_number</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VARCHAR(50)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A unique alphanumeric identifier for each sales order (e.g., 'SO54496').</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">product_key</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">INT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Surrogate key linking the order to the product dimension table.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">customer_key</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">INT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Surrogate key linking the order to the customer dimension table.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">order_date</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DATE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The date when the order was placed.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">shipping_date</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DATE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The date when the order was shipped to the customer.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">due_date</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DATE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The date when the order payment was due.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sales_amount</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">INT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The total monetary value of the sale for the line item, in whole currency units (e.g., 25).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">quantity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">INT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of units of the product ordered for the line item (e.g., 1).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">price</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">INT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The price per unit of the product for the line item, in whole currency units (e.g., 25).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-01-26 23:23:07 -0600
+Last updated 2026-01-28 15:59:37 -0600
 </div>
 </div>
 </body>
