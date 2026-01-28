@@ -14,6 +14,10 @@
 
 set -o pipefail
 
+[ "$(id -u)" != "129" ] && \
+    echo -ne "$0 must be run as user 'postgres', ie.\n  sudo -u postgres $0 ...\n" 1>&2 && \
+    exit 1
+
 logroot=/tmp/de-dwh-sql
 mkdir -p $logroot
 tstamp=$(date +%Y-%m-%d_%H%M%S)
@@ -24,9 +28,16 @@ check_error ()
 {
     rc=$?
     if [ $rc -ne 0 ]; then
-        echo ERROR!!!! RC=$rc
-        echo email sent to Data Engineer.
+        echo ''
+        echo ---------------------------------------------------
+        echo ERROR. RC=$rc
+        echo ---------------------------------------------------
         exit 1
+    else
+        echo ''
+        echo ---------------------------------------------------
+        echo Done.
+        echo ---------------------------------------------------
     fi
 }
 
@@ -58,14 +69,12 @@ silver_create ()
 
 silver_load ()
 {
-    #psql_task ./src/silver/load_silver.sql
-    placeholder for silver load
+    psql_task ./src/silver/load_silver.sql
 }
 
 silver_validate ()
 {
-    psql_task ./src/silver/qry_check_for_dupe_keys.sql
-    echo remember to change to silver after load
+    psql_task ./src/silver/validate_silver.sql
 }
 
 gold_create ()
@@ -142,4 +151,5 @@ case $1 in
 esac
 # end::options[]
 
-echo -ne "\n=================================\nElapsed time: $SECONDS seconds\n=================================\n" | tee -a "${logroot}/${tstamp}-0-all.log"
+echo -ne "\n=================================\nElapsed time: $SECONDS seconds\n=================================\n" | tee -a "${logroot}/${tstamp}.log"
+
