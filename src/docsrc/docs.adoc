@@ -1,8 +1,8 @@
 = Documentation
 
-The project documentation is written in AsciiDoc.
-If you want to modify and rebuild the documentation, you will need Asciidoctor.
-The method I used to install asciidoctor was to install the latest Ruby gems:
+The project documentation is written with AsciiDoc (source in the `src/docsrc` folder).
+If you want to modify and rebuild the documentation, install Asciidoctor and
+a couple of supporting gems for PDF and diagrams.
 
 ```
 sudo apt install ruby
@@ -39,36 +39,41 @@ nvm install --lts
 npm install -g @mermaid-js/mermaid-cli
 ```
 
+.An unsuccessful tangent
+****
+I like Baraa's specifications table but didn't want to copy it into Asciidoc,
+so I thought I might extract the text from his image and reformat it into
+Asciidoc. I ended up letting AI have at it.
 
-== OCR image text extraction support
-
+OCR image text extraction support::
++
 For OCR image text extraction, Tesseract and the Python Pillow and pytesseract libraries are required.
-
++
 ```
 sudo apt install tesseract-ocr
 pip install Pillow pytesseract
 ```
 
-=== Preparing the specifications table
-
-I decided to not make the extraction part of the pipeline and just prep the source beforehand.
-To recreate the table preparation process:
-
+Preparing the specifications table::
++
 1.  Extract the text:
     
     pushd src/docsrc/img-extract
     python ocr-extract.py > ocr-output.txt
     popd
-
-2.  _......x......_
-
-3.  Okay, nevermind. ChatGPT did it all for me. I uploaded the image and gave it this prompt:
-
++
+2.  _..._
++
+3.  Okay, nevermind. I let ChatGPT have at it and do it all for me.
+    I uploaded the image and gave it this prompt:
++
     I will upload an image that is basically a fancy table.
     Extract the text from the image and convert it to a table in AsciiDoc.
     Let me know when you're ready.
 
 But the OCR was a good exercise anyway.
+
+****
 
 === Preparing the ETL mindmap
 
@@ -81,10 +86,10 @@ under `src/docsrc/img-extract/etl-map.png`.
     I'd like you to extract the information from the image and recreate it
     using mermaid syntax. Let me know when you're ready.
 
-I'll clean it up with icons and shapes myself.
+I'll clean it up with colors and flags myself.
 Can't let AI rob me of all the fun!
 
 (I later asked ChatGPT to convert to a Drawio file instead, but it had an error about
 IDs. After debugging with `xmllint` and fixing the IDs, I got a valid Drawio file,
 but it was only two node levels deep and didn't follow the style anyway. So, I'm
-sticking with mermaid for now.)
+sticking with mermaid.)

@@ -1,3 +1,6 @@
 = Bronze layer
 
+[sidebar]
+{code-loc}/src/bronze/[/src/bronze/]
+
 The Bronze layer is the initial storage area for raw data ingested from various sources. This layer is designed to store data in its original format, preserving its integrity and providing a foundation for further processing and transformation.

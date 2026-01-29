@@ -1,10 +1,10 @@
 = Preparing the environment
 
-This project uses Linux on Pop_OS!, with PostgreSQL as the database management system for the data warehouse.
+This project was created on Pop_OS! Linux, with PostgreSQL as the DBMS.
 
 Before running the data warehouse scripts, ensure that you have PostgreSQL installed and running on your system.
-You will also need to have access to the PostgreSQL user with sufficient privileges to create databases and tables.
-Currently, the scripts assume that the PostgreSQL user is `postgres`.
+You will also need to have access to a PostgreSQL user with sufficient privileges to create databases and tables.
+In this project, the scripts use the PostgreSQL root user `postgres`.
 
 To install PostgreSQL:
 
@@ -13,7 +13,7 @@ sudo apt install postgresql
 ```
 
 By default, the service will start automatically after installation.
-If it does not, you can start it manually using the following command:
+If it doesn't, you can start it manually using the following command:
 
 ```
 sudo service postgresql start

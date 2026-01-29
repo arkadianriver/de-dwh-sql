@@ -1,14 +1,11 @@
 = Data architecture
 
-Before defining the data flow, it's essential to establish
-clear specifications for each layer in the data pipeline. This ensures
-that each layer serves its intended purpose and meets the requirements
-of the overall data strategy.
-
+Before defining the data flow, Baraa helps us map out clear specifications,
+as if we spent time with stakeholders to understand their needs.
 
 == ETL task breakdown
 
-These are the tasks in the ETL process. I'd go over this with stakeholders
+These are the tasks in every ETL process. I'd go over this with stakeholders
 to see what's required. For this exercise, Baraa wants us to do the tasks
 highlighted in pink. (We'll do the entire _Transformation_ section and its
 subtasks.)
@@ -114,7 +111,8 @@ mindmapDiagram {
 
 == Specifications
 
-Given the chosen tasks in the ETL process, we have the following specifications.
+Given the chosen tasks in the ETL process and an understanding of the
+basic medallion flow, we have the following specifications.
 
 [cols="2,3,3,3", options="header"]
 |===

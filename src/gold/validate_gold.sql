@@ -3,13 +3,18 @@
 
 \echo ''
 \echo ===================================================
-\echo Dimensions
+\echo Validating Gold Layer...
 \echo ===================================================
 
 \echo ''
 \echo ---------------------------------------------------
-\echo Customer dimension
+\echo Dimensions
 \echo ---------------------------------------------------
+
+\echo ''
+\echo -----------------------
+\echo Customer dimension...
+\echo -----------------------
 
 \echo >> Check for uniqueness of customer keys.
 -- Expectation: No Results
@@ -27,9 +32,9 @@ BEGIN
 END $$;
 
 \echo ''
-\echo ---------------------------------------------------
-\echo Product dimension
-\echo ---------------------------------------------------
+\echo -----------------------
+\echo Product dimension...
+\echo -----------------------
 
 \echo >> Check for uniqueness of product keys.
 -- Expectation: No Results
@@ -48,13 +53,8 @@ END $$;
 
 
 \echo ''
-\echo ===================================================
-\echo Facts
-\echo ===================================================
-
-\echo ''
 \echo ---------------------------------------------------
-\echo Sales facts
+\echo Sales Facts
 \echo ---------------------------------------------------
 
 \echo >> Check fact and dimension connectivity.

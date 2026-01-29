@@ -3,23 +3,26 @@
 
 \echo ''
 \echo ===================================================
-\echo CRM Data
+\echo Validating Silver Layer...
 \echo ===================================================
 
 \echo ''
 \echo ---------------------------------------------------
-\echo crm_cust_info
+\echo CRM Data
 \echo ---------------------------------------------------
+
+\echo ''
+\echo -----------------------
+\echo crm_cust_info...
+\echo -----------------------
 
 \echo >> Check for nulls or duplicates.
 -- Expectation: No Results
 DO $$
 BEGIN
 	IF EXISTS (
-		-- tag::check_nulls[]
 		select cst_id, count(*) from silver.crm_cust_info
 		group by cst_id having count(*) > 1 or cst_id is null
-		-- end::check_nulls[]
 	) THEN
 		RAISE EXCEPTION 'Duplicates or null values exist.';
 	ELSE
@@ -59,9 +62,9 @@ END $$;
 
 
 \echo ''
-\echo ---------------------------------------------------
-\echo crm_prd_info
-\echo ---------------------------------------------------
+\echo -----------------------
+\echo crm_prd_info...
+\echo -----------------------
 
 \echo >> Check for nulls or duplicates.
 -- Expectation: No Results
@@ -139,9 +142,9 @@ END $$;
 
 
 \echo ''
-\echo ---------------------------------------------------
-\echo crm_sales_details
-\echo ---------------------------------------------------
+\echo -----------------------
+\echo crm_sales_details...
+\echo -----------------------
 
 
 \echo >> Check for invalid due dates
@@ -197,14 +200,14 @@ END $$;
 
 
 \echo ''
-\echo ===================================================
+\echo ---------------------------------------------------
 \echo ERP Data
-\echo ===================================================
+\echo ---------------------------------------------------
 
 \echo ''
-\echo ---------------------------------------------------
-\echo erp_cust_az12
-\echo ---------------------------------------------------
+\echo -----------------------
+\echo erp_cust_az12...
+\echo -----------------------
 
 \echo >> Check for invalid birthdates
 -- Expectation: No Results
@@ -238,9 +241,9 @@ END $$;
 
 
 \echo ''
-\echo ---------------------------------------------------
-\echo erp_px_cat_g1v2
-\echo ---------------------------------------------------
+\echo -----------------------
+\echo erp_px_cat_g1v2...
+\echo -----------------------
 
 
 \echo >> Check for unwanted spaces
@@ -276,9 +279,10 @@ END $$;
 
 
 \echo ''
-\echo ---------------------------------------------------
-\echo erp_loc_a101
-\echo ---------------------------------------------------
+\echo ''
+\echo -----------------------
+\echo erp_loc_a101...
+\echo -----------------------
 
 \echo >> Data standardization & consistency
 -- Expectation: No Results

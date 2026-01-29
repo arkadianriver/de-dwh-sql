@@ -1,11 +1,15 @@
+<<<
+
 [#data_catalog]
-= The Data Catalog (gold layer)
+= The Data Catalog
+
+Distribute this _Data Catalog_ to business stakeholders (analysts, data scientists, etc.).
 
 
 == Overview
 
-The Gold Layer is the business-level data representation, structured to support analytical and reporting use cases.
-It consists of *dimension tables* and *fact tables* for specific business metrics.
+This catalog describes the Gold layer, the business-level data representation, structured to support analytical and reporting
+use cases. It consists of *dimension tables* and *fact tables* for specific business metrics.
 
 
 == gold.dim_customers
@@ -13,7 +17,7 @@ It consists of *dimension tables* and *fact tables* for specific business metric
 - *Purpose:* Stores customer details enriched with demographic and geographic data.
 - *Columns:*
 
-[cols="3,2,10", options="header"]
+[cols="2,2,6", options="header"]
 |===
 | Column Name      | Data Type     | Description
 
@@ -31,7 +35,7 @@ It consists of *dimension tables* and *fact tables* for specific business metric
 
 === Known countries
 
-The following countries are currently the only ones that exist in the data.
+The following countries are currently the only values that exist in the data.
 
 - Australia
 - Canada
@@ -47,7 +51,7 @@ The following countries are currently the only ones that exist in the data.
 - *Purpose:* Provides information about the products and their attributes.
 - *Columns:*
 
-[cols="3,2,10", options="header"]
+[cols="2,2,6", options="header"]
 |===
 | Column Name         | Data Type     | Description                                                                                   
 
@@ -70,7 +74,7 @@ The following countries are currently the only ones that exist in the data.
 - *Purpose:* Stores transactional sales data for analytical purposes.
 - *Columns:*
 
-[cols="3,2,10", options="header"]
+[cols="2,2,6", options="header"]
 |===
 | Column Name     | Data Type     | Description                                                                                
 

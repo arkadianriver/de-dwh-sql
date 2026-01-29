@@ -12,7 +12,7 @@
 
 \echo ''
 \echo '====================================================='
-\echo 'Creating Gold Layer Tables...'
+\echo 'Creating Gold Layer Views...'
 \echo '====================================================='
 
 \echo ''

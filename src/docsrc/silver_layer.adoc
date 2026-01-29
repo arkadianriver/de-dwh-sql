@@ -1,5 +1,8 @@
 = Silver layer
 
+[sidebar]
+{code-loc}/src/silver/[/src/silver/]
+
 The Silver layer serves as the intermediate processing stage in the data pipeline. In this layer, raw data from the Bronze layer is cleaned, transformed, and enriched to enhance its quality and usability for analysis.
 
 The key functions of the Silver layer include:
@@ -53,12 +56,13 @@ package ERP {
 == Coding the transformations
 
 Add metadata columns to track data lineage and help with debugging.
-We'll add a `created` column to each silver table. Following the data engineer naming conventions,
+We'll add a `created` column to each silver table.
+Following the data engineer naming conventions (details in Baraa's video),
 and Postgres syntax, we add this column to the create script:
 
 [source,sql]
 ----
-    dwh_created     TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+dwh_created     TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
 ----
 
 === CRM customer info table
@@ -69,7 +73,8 @@ First, we'll check for nulls in the primary key columns.
 
 [source,sql]
 ----
-include::../silver/validate_silver.sql[tag=check_nulls]
+select cst_id, count(*) from bronze.crm_cust_info
+group by cst_id having count(*) > 1 or cst_id is null
 ----
 
 

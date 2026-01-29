@@ -1,7 +1,17 @@
 = Pipeline
 
-The ETL pipeline (`pipeline.sh`) is run with Bash, calling SQL scripts run with psql, with output
-to the command line and a log in `/tmp/de-dwh-sql`.
+[sidebar]
+{code-loc}/pipeline.sh[/pipeline.sh]
+
+Baraa's project doesn't have any kind of automated pipeline, so I was a bit unsure about how
+to run the scripts in a clean and automated way.
+After briefly looking at Airflow,
+I decided to write the ETL pipeline with Bash (`pipeline.sh`), since I started testing
+things with `psql` on the command line and am not ready to dive into learning the Airflow
+syntax just yet. Simple.
+
+The `pipeline.sh` script calls SQL scripts run with psql, with output to the command line
+and a log in `/tmp/sql-data-warehouse/`.
 
 To run the full pipeline:
 

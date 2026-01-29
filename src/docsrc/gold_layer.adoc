@@ -1,5 +1,8 @@
 = Gold layer
 
+[sidebar]
+{code-loc}/src/gold/[/src/gold/]
+
 The Gold layer represents the final stage in the data pipeline, where the data is refined and optimized for business intelligence and analytics,
 separated into facts and dimensions.
 For this project, the star schema model is sufficient as there are only a couple of product and customer _dimensions_ surrounding the sales orders _facts_.
@@ -52,15 +55,15 @@ package ERP <<Rectangle>> {
 ----
 
 Referring back to the xref:architecture.adoc#_specifications[], we see that rather than loading data,
-we'll be creating views into the cleaned silver tables, views that might aggregate and integrate information.
+we'll be creating views into the cleaned silver tables, views to integrate and possibly aggregate information.
 
 Another thing to add to the views are surrogate keys to use as the primary keys.
 TIL that these are exposed in the fact view SELECTs, while it's fact view JOINs that create
-the links between the relevant columns gold views (rather than using those columns as foreign keys).
-Only after JOINing the fact table are the foreign keys resolved.
-That's why it seemed that the surrogates could be sorted however you want. (I think.)
+the links between the relevant columns in the gold views
+(rather than defining those columns as foreign keys).
+Only after JOINing the fact table are the foreign key relationships revealed.
 
-To verify the joins (foreign key integrity) execute joins on the keys and see if any keys are NULL:
+To verify the joins (foreign key integrity) execute joins on the keys and to ensure none of them are NULL:
 
 ```
 SELECT COUNT(*) FROM gold.fact_sales f
@@ -69,7 +72,7 @@ LEFT JOIN gold.products c ON f.product_key = c.product_key
 WHERE p.product_key IS NULL OR c.customer_key IS NULL;
 ```
 
-After coding the gold layer, we end up with this data model of the star schema:
+After coding the gold layer, we end up with this data model for our star schema:
 
 [plantuml,gold_star,png]
 ----

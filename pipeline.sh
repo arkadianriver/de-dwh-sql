@@ -18,7 +18,7 @@ set -o pipefail
     echo -ne "$0 must be run as user 'postgres', ie.\n  sudo -u postgres $0 ...\n" 1>&2 && \
     exit 1
 
-logroot=/tmp/de-dwh-sql
+logroot=/tmp/sql-data-warehouse
 mkdir -p $logroot
 tstamp=$(date +%Y-%m-%d_%H%M%S)
 
@@ -43,7 +43,7 @@ check_error ()
 
 psql_task ()
 {
-    psql -v schema=$2 -v ON_ERROR_STOP=on -f $1 2>&1 | tee "${logroot}/${tstamp}.log";
+    psql -v schema=$2 -v ON_ERROR_STOP=on -f $1 2>&1 | tee -a "${logroot}/${tstamp}.log";
     check_error
 }
 

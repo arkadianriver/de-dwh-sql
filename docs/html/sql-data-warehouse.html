@@ -444,10 +444,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_documentation">Documentation</a>
 <ul class="sectlevel2">
 <li><a href="#_building_the_documentation">Building the documentation</a></li>
-<li><a href="#_diagram_support">Diagram support</a></li>
-<li><a href="#_ocr_image_text_extraction_support">OCR image text extraction support</a>
+<li><a href="#_diagram_support">Diagram support</a>
 <ul class="sectlevel3">
-<li><a href="#_preparing_the_specifications_table">Preparing the specifications table</a></li>
 <li><a href="#_preparing_the_etl_mindmap">Preparing the ETL mindmap</a></li>
 </ul>
 </li>
@@ -460,22 +458,20 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_data_flow">Data Flow</a></li>
 </ul>
 </li>
+<li><a href="#_code">Code</a>
+<ul class="sectlevel2">
 <li><a href="#_pipeline">Pipeline</a></li>
 <li><a href="#_bronze_layer">Bronze layer</a></li>
 <li><a href="#_silver_layer">Silver layer</a>
-<ul class="sectlevel2">
-<li><a href="#_data_integration_analysis_and_sketch">Data integration analysis and sketch</a></li>
-<li><a href="#_coding_the_transformations">Coding the transformations</a>
 <ul class="sectlevel3">
-<li><a href="#_crm_customer_info_table">CRM customer info table</a></li>
-<li><a href="#_crm_product_info_and_sales_tables">CRM product info and sales tables</a></li>
-<li><a href="#_erp_tables">ERP tables</a></li>
-</ul>
-</li>
+<li><a href="#_data_integration_analysis_and_sketch">Data integration analysis and sketch</a></li>
+<li><a href="#_coding_the_transformations">Coding the transformations</a></li>
 </ul>
 </li>
 <li><a href="#_gold_layer">Gold layer</a></li>
-<li><a href="#data_catalog">The Data Catalog (gold layer)</a>
+</ul>
+</li>
+<li><a href="#data_catalog">The Data Catalog</a>
 <ul class="sectlevel2">
 <li><a href="#_overview">Overview</a></li>
 <li><a href="#_gold_dim_customers">gold.dim_customers</a>
@@ -491,16 +487,35 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p>This document accompanies the <em>SQL Data Warehouse project</em>, created while following
+along with the <a href="https://www.youtube.com/watch?v=SSKVgrwhzus&amp;t=84064s">30-hour SQL Full course</a>
+on the <em>Data with Baraa</em> YouTube channel.
+The project is to build a Medallion-structured data warehouse with a primary focus on using just
+SQL to extract from CSV files, perform silver transformations, and restructure and integrate
+the gold layer into a star schema.</p>
+</div>
+<div class="paragraph">
+<p>Find the project at <a href="https://github.com/arkadianriver/de-dwh-sql" class="bare">https://github.com/arkadianriver/de-dwh-sql</a>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
 <div class="sect1">
 <h2 id="_preparing_the_environment">Preparing the environment</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This project uses Linux on Pop_OS!, with PostgreSQL as the database management system for the data warehouse.</p>
+<p>This project was created on Pop_OS! Linux, with PostgreSQL as the DBMS.</p>
 </div>
 <div class="paragraph">
 <p>Before running the data warehouse scripts, ensure that you have PostgreSQL installed and running on your system.
 You will also need to have access to the PostgreSQL user with sufficient privileges to create databases and tables.
-Currently, the scripts assume that the PostgreSQL user is <code>postgres</code>.</p>
+In this project, the scripts use the PostgreSQL root user <code>postgres</code>.</p>
 </div>
 <div class="paragraph">
 <p>To install PostgreSQL:</p>
@@ -512,7 +527,7 @@ Currently, the scripts assume that the PostgreSQL user is <code>postgres</code>.
 </div>
 <div class="paragraph">
 <p>By default, the service will start automatically after installation.
-If it does not, you can start it manually using the following command:</p>
+If it doesn&#8217;t, you can start it manually using the following command:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -525,9 +540,9 @@ If it does not, you can start it manually using the following command:</p>
 <h2 id="_documentation">Documentation</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The project documentation is written in AsciiDoc.
-If you want to modify and rebuild the documentation, you will need Asciidoctor.
-The method I used to install asciidoctor was to install the latest Ruby gems:</p>
+<p>The project documentation is written with AsciiDoc (source in the <code>src/docsrc</code> folder).
+If you want to modify and rebuild the documentation, install Asciidoctor and
+a couple of supporting gems for PDF and diagrams.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -570,9 +585,18 @@ nvm install --lts
 npm install -g @mermaid-js/mermaid-cli</code></pre>
 </div>
 </div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">An unsuccessful tangent</div>
+<div class="paragraph">
+<p>I like Baraa&#8217;s specifications table but didn&#8217;t want to copy it into Asciidoc,
+so I thought I might extract the text from his image and reformat it into
+Asciidoc. I ended up letting AI have at it.</p>
 </div>
-<div class="sect2">
-<h3 id="_ocr_image_text_extraction_support">OCR image text extraction support</h3>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">OCR image text extraction support</dt>
+<dd>
 <div class="paragraph">
 <p>For OCR image text extraction, Tesseract and the Python Pillow and pytesseract libraries are required.</p>
 </div>
@@ -582,12 +606,9 @@ npm install -g @mermaid-js/mermaid-cli</code></pre>
 pip install Pillow pytesseract</code></pre>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_preparing_the_specifications_table">Preparing the specifications table</h4>
-<div class="paragraph">
-<p>I decided to not make the extraction part of the pipeline and just prep the source beforehand.
-To recreate the table preparation process:</p>
-</div>
+</dd>
+<dt class="hdlist1">Preparing the specifications table</dt>
+<dd>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -601,10 +622,11 @@ popd</pre>
 </div>
 </li>
 <li>
-<p><em>&#8230;&#8203;&#8230;&#8203;x&#8230;&#8203;&#8230;&#8203;</em></p>
+<p><em>&#8230;&#8203;</em></p>
 </li>
 <li>
-<p>Okay, nevermind. ChatGPT did it all for me. I uploaded the image and gave it this prompt:</p>
+<p>Okay, nevermind. I let ChatGPT have at it and do it all for me.
+I uploaded the image and gave it this prompt:</p>
 <div class="literalblock">
 <div class="content">
 <pre>I will upload an image that is basically a fancy table.
@@ -615,8 +637,12 @@ Let me know when you're ready.</pre>
 </li>
 </ol>
 </div>
+</dd>
+</dl>
+</div>
 <div class="paragraph">
 <p>But the OCR was a good exercise anyway.</p>
+</div>
 </div>
 </div>
 <div class="sect3">
@@ -636,14 +662,14 @@ using mermaid syntax. Let me know when you're ready.</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>I&#8217;ll clean it up with icons and shapes myself.
+<p>I&#8217;ll clean it up with colors and flags myself.
 Can&#8217;t let AI rob me of all the fun!</p>
 </div>
 <div class="paragraph">
 <p>(I later asked ChatGPT to convert to a Drawio file instead, but it had an error about
 IDs. After debugging with <code>xmllint</code> and fixing the IDs, I got a valid Drawio file,
 but it was only two node levels deep and didn&#8217;t follow the style anyway. So, I&#8217;m
-sticking with mermaid for now.)</p>
+sticking with mermaid.)</p>
 </div>
 </div>
 </div>
@@ -653,15 +679,13 @@ sticking with mermaid for now.)</p>
 <h2 id="_data_architecture">Data architecture</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Before defining the data flow, it&#8217;s essential to establish
-clear specifications for each layer in the data pipeline. This ensures
-that each layer serves its intended purpose and meets the requirements
-of the overall data strategy.</p>
+<p>Before defining the data flow, Baraa helps us map out clear specifications,
+as if we spent time with stakeholders to understand their needs.</p>
 </div>
 <div class="sect2">
 <h3 id="_etl_task_breakdown">ETL task breakdown</h3>
 <div class="paragraph">
-<p>These are the tasks in the ETL process. I&#8217;d go over this with stakeholders
+<p>These are the tasks in every ETL process. I&#8217;d go over this with stakeholders
 to see what&#8217;s required. For this exercise, Baraa wants us to do the tasks
 highlighted in pink. (We&#8217;ll do the entire <em>Transformation</em> section and its
 subtasks.)</p>
@@ -675,7 +699,8 @@ subtasks.)</p>
 <div class="sect2">
 <h3 id="_specifications">Specifications</h3>
 <div class="paragraph">
-<p>Given the chosen tasks in the ETL process, we have the following specifications.</p>
+<p>Given the chosen tasks in the ETL process and an understanding of the
+basic medallion flow, we have the following specifications.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -762,11 +787,26 @@ Business Users</p></td>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_pipeline">Pipeline</h2>
+<h2 id="_code">Code</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_pipeline">Pipeline</h3>
+<div class="sidebarblock">
+<div class="content">
+Location in the repository: <a href="https://github.com/arkadianriver/de-dwh-sql/blob/main/pipeline.sh">/pipeline.sh</a>
+</div>
+</div>
 <div class="paragraph">
-<p>The ETL pipeline (<code>pipeline.sh</code>) is run with Bash, calling SQL scripts run with psql, with output
-to the command line and a log in <code>/tmp/de-dwh-sql</code>.</p>
+<p>Baraa&#8217;s project doesn&#8217;t have any kind of automated pipeline, so I was a bit unsure about how
+to run the scripts in a clean and automated way.
+After briefly looking at Airflow,
+I decided to write the ETL pipeline with Bash (<code>pipeline.sh</code>), since I started testing
+things with <code>psql</code> on the command line and am not ready to dive into learning the Airflow
+syntax just yet. Simple.</p>
+</div>
+<div class="paragraph">
+<p>The <code>pipeline.sh</code> script calls SQL scripts run with psql, with output to the command line
+and a log in <code>/tmp/sql-data-warehouse/</code>.</p>
 </div>
 <div class="paragraph">
 <p>To run the full pipeline:</p>
@@ -835,18 +875,24 @@ esac</code></pre>
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_bronze_layer">Bronze layer</h3>
+<div class="sidebarblock">
+<div class="content">
+Location in the repository: <a href="https://github.com/arkadianriver/de-dwh-sql/blob/main/src/bronze/">/src/bronze/</a>
 </div>
-<div class="sect1">
-<h2 id="_bronze_layer">Bronze layer</h2>
-<div class="sectionbody">
+</div>
 <div class="paragraph">
 <p>The Bronze layer is the initial storage area for raw data ingested from various sources. This layer is designed to store data in its original format, preserving its integrity and providing a foundation for further processing and transformation.</p>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_silver_layer">Silver layer</h3>
+<div class="sidebarblock">
+<div class="content">
+Location in the repository: <a href="https://github.com/arkadianriver/de-dwh-sql/blob/main/src/silver/">/src/silver/</a>
 </div>
-<div class="sect1">
-<h2 id="_silver_layer">Silver layer</h2>
-<div class="sectionbody">
+</div>
 <div class="paragraph">
 <p>The Silver layer serves as the intermediate processing stage in the data pipeline. In this layer, raw data from the Bronze layer is cleaned, transformed, and enriched to enhance its quality and usability for analysis.</p>
 </div>
@@ -869,28 +915,29 @@ esac</code></pre>
 <div class="paragraph">
 <p>By implementing these processes in the Silver layer, we ensure that the data is reliable and ready for advanced analytics and reporting in the subsequent Gold layer.</p>
 </div>
-<div class="sect2">
-<h3 id="_data_integration_analysis_and_sketch">Data integration analysis and sketch</h3>
+<div class="sect3">
+<h4 id="_data_integration_analysis_and_sketch">Data integration analysis and sketch</h4>
 <div class="imageblock">
 <div class="content">
 <img src="silver_analysis.png" alt="silver analysis" width="843" height="259">
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_coding_the_transformations">Coding the transformations</h3>
+<div class="sect3">
+<h4 id="_coding_the_transformations">Coding the transformations</h4>
 <div class="paragraph">
 <p>Add metadata columns to track data lineage and help with debugging.
-We&#8217;ll add a <code>created</code> column to each silver table. Following the data engineer naming conventions,
+We&#8217;ll add a <code>created</code> column to each silver table.
+Following the data engineer naming conventions (details in Baraa&#8217;s video),
 and Postgres syntax, we add this column to the create script:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-sql" data-lang="sql">    dwh_created     TIMESTAMP DEFAULT CURRENT_TIMESTAMP;</code></pre>
+<pre class="highlight"><code class="language-sql" data-lang="sql">dwh_created     TIMESTAMP DEFAULT CURRENT_TIMESTAMP;</code></pre>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_crm_customer_info_table">CRM customer info table</h4>
+<div class="sect4">
+<h5 id="_crm_customer_info_table">CRM customer info table</h5>
 <div class="paragraph">
 <p>Next, we gotta check the data quality of the bronze tables.</p>
 </div>
@@ -899,8 +946,8 @@ and Postgres syntax, we add this column to the create script:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-sql" data-lang="sql">		select cst_id, count(*) from silver.crm_cust_info
-		group by cst_id having count(*) &gt; 1 or cst_id is null</code></pre>
+<pre class="highlight"><code class="language-sql" data-lang="sql">select cst_id, count(*) from bronze.crm_cust_info
+group by cst_id having count(*) &gt; 1 or cst_id is null</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -986,8 +1033,8 @@ See the <code>src/silver</code> folder for the full SQL scripts.</p>
 </ul>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_crm_product_info_and_sales_tables">CRM product info and sales tables</h4>
+<div class="sect4">
+<h5 id="_crm_product_info_and_sales_tables">CRM product info and sales tables</h5>
 <div class="paragraph">
 <p>For the <code>crm_prd_info</code> table, we will, in addition:</p>
 </div>
@@ -1027,8 +1074,8 @@ bad values.</p>
 </ul>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_erp_tables">ERP tables</h4>
+<div class="sect4">
+<h5 id="_erp_tables">ERP tables</h5>
 <div class="paragraph">
 <p>In addition to deriving a valid foreign key to <code>crm_cust_info</code>,
 there are birthdays that are in the future and as old as 1917!
@@ -1047,10 +1094,13 @@ when checking spaces, standardization, and consistency, we find no issues.</p>
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_gold_layer">Gold layer</h3>
+<div class="sidebarblock">
+<div class="content">
+Location in the repository: <a href="https://github.com/arkadianriver/de-dwh-sql/blob/main/src/gold/">/src/gold/</a>
 </div>
-<div class="sect1">
-<h2 id="_gold_layer">Gold layer</h2>
-<div class="sectionbody">
+</div>
 <div class="paragraph">
 <p>The Gold layer represents the final stage in the data pipeline, where the data is refined and optimized for business intelligence and analytics,
 separated into facts and dimensions.
@@ -1067,17 +1117,17 @@ to group things logically.</p>
 </div>
 <div class="paragraph">
 <p>Referring back to the <a href="#_specifications">Specifications</a>, we see that rather than loading data,
-we&#8217;ll be creating views into the cleaned silver tables, views that might aggregate and integrate information.</p>
+we&#8217;ll be creating views into the cleaned silver tables, views to integrate and possibly aggregate information.</p>
 </div>
 <div class="paragraph">
 <p>Another thing to add to the views are surrogate keys to use as the primary keys.
 TIL that these are exposed in the fact view SELECTs, while it&#8217;s fact view JOINs that create
-the links between the relevant columns gold views (rather than using those columns as foreign keys).
-Only after JOINing the fact table are the foreign keys resolved.
-That&#8217;s why it seemed that the surrogates could be sorted however you want. (I think.)</p>
+the links between the relevant columns in the gold views
+(rather than defining those columns as foreign keys).
+Only after JOINing the fact table are the foreign key relationships revealed.</p>
 </div>
 <div class="paragraph">
-<p>To verify the joins (foreign key integrity) execute joins on the keys and see if any keys are NULL:</p>
+<p>To verify the joins (foreign key integrity) execute joins on the keys and to ensure none of them are NULL:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1088,23 +1138,28 @@ WHERE p.product_key IS NULL OR c.customer_key IS NULL;</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>After coding the gold layer, we end up with this data model of the star schema:</p>
+<p>After coding the gold layer, we end up with this data model for our star schema:</p>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="gold_star.png" alt="gold star" width="427" height="560">
 </div>
 </div>
+<div style="page-break-after: always;"></div>
+</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="data_catalog">The Data Catalog (gold layer)</h2>
+<h2 id="data_catalog">The Data Catalog</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>Distribute this <em>Data Catalog</em> to business stakeholders (analysts, data scientists, etc.).</p>
+</div>
 <div class="sect2">
 <h3 id="_overview">Overview</h3>
 <div class="paragraph">
-<p>The Gold Layer is the business-level data representation, structured to support analytical and reporting use cases.
-It consists of <strong>dimension tables</strong> and <strong>fact tables</strong> for specific business metrics.</p>
+<p>This catalog describes the Gold layer, the business-level data representation, structured to support analytical and reporting
+use cases. It consists of <strong>dimension tables</strong> and <strong>fact tables</strong> for specific business metrics.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1122,8 +1177,8 @@ It consists of <strong>dimension tables</strong> and <strong>fact tables</strong
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
-<col style="width: 13.3333%;">
-<col style="width: 66.6667%;">
+<col style="width: 20%;">
+<col style="width: 60%;">
 </colgroup>
 <thead>
 <tr>
@@ -1188,7 +1243,7 @@ It consists of <strong>dimension tables</strong> and <strong>fact tables</strong
 <div class="sect3">
 <h4 id="_known_countries">Known countries</h4>
 <div class="paragraph">
-<p>The following countries are currently the only ones that exist in the data.</p>
+<p>The following countries are currently the only values that exist in the data.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1232,8 +1287,8 @@ It consists of <strong>dimension tables</strong> and <strong>fact tables</strong
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
-<col style="width: 13.3333%;">
-<col style="width: 66.6667%;">
+<col style="width: 20%;">
+<col style="width: 60%;">
 </colgroup>
 <thead>
 <tr>
@@ -1316,8 +1371,8 @@ It consists of <strong>dimension tables</strong> and <strong>fact tables</strong
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
-<col style="width: 13.3333%;">
-<col style="width: 66.6667%;">
+<col style="width: 20%;">
+<col style="width: 60%;">
 </colgroup>
 <thead>
 <tr>
@@ -1380,7 +1435,7 @@ It consists of <strong>dimension tables</strong> and <strong>fact tables</strong
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-01-28 15:59:37 -0600
+Last updated 2026-01-28 19:56:02 -0600
 </div>
 </div>
 </body>

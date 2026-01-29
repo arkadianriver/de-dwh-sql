@@ -1,0 +1,30 @@
+= Project: Data Warehouse with PostgreSQL
+:toc: left
+:toclevels: 3
+
+:code-loc: Location in the repository: https://github.com/arkadianriver/de-dwh-sql/blob/main
+
+
+****
+This document accompanies the _SQL Data Warehouse project_, created while following
+along with the https://www.youtube.com/watch?v=SSKVgrwhzus&t=84064s[30-hour SQL Full course]
+on the _Data with Baraa_ YouTube channel.
+The project is to build a Medallion-structured data warehouse with a primary focus on using just
+SQL to extract from CSV files, perform silver transformations, and restructure and integrate
+the gold layer into a star schema.
+
+Find the project at https://github.com/arkadianriver/de-dwh-sql.
+****
+
+include::prepare.adoc[leveloffset=+1]
+include::docs.adoc[leveloffset=+1]
+include::architecture.adoc[leveloffset=+1]
+
+== Code
+
+include::pipeline.adoc[leveloffset=+2]
+include::bronze_layer.adoc[leveloffset=+2]
+include::silver_layer.adoc[leveloffset=+2]
+include::gold_layer.adoc[leveloffset=+2]
+
+include::data_catalog.adoc[leveloffset=+1]
