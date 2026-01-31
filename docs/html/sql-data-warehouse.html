@@ -514,7 +514,7 @@ the gold layer into a star schema.</p>
 </div>
 <div class="paragraph">
 <p>Before running the data warehouse scripts, ensure that you have PostgreSQL installed and running on your system.
-You will also need to have access to the PostgreSQL user with sufficient privileges to create databases and tables.
+You will also need to have access to a PostgreSQL user with sufficient privileges to create databases and tables.
 In this project, the scripts use the PostgreSQL root user <code>postgres</code>.</p>
 </div>
 <div class="paragraph">
@@ -797,15 +797,16 @@ Location in the repository: <a href="https://github.com/arkadianriver/de-dwh-sql
 </div>
 </div>
 <div class="paragraph">
-<p>Baraa&#8217;s project doesn&#8217;t have any kind of automated pipeline, so I was a bit unsure about how
-to run the scripts in a clean and automated way.
-After briefly looking at Airflow,
+<p>Baraa&#8217;s project uses stored procedures for orchestration, but no clear flow to kick
+them off other than manually connecting to the db and running EXEC on the procedures.
+I wanted to run the scripts in a clean and automated way. After briefly looking at Airflow,
 I decided to write the ETL pipeline with Bash (<code>pipeline.sh</code>), since I started testing
 things with <code>psql</code> on the command line and am not ready to dive into learning the Airflow
-syntax just yet. Simple.</p>
+syntax just yet. Simple. Each bash function does kick off SQL commands, though, some as
+temporary procedures (DO blocks).</p>
 </div>
 <div class="paragraph">
-<p>The <code>pipeline.sh</code> script calls SQL scripts run with psql, with output to the command line
+<p>The <code>pipeline.sh</code> script calls the SQL scripts with psql, with output to the command line
 and a log in <code>/tmp/sql-data-warehouse/</code>.</p>
 </div>
 <div class="paragraph">

@@ -3,14 +3,15 @@
 [sidebar]
 {code-loc}/pipeline.sh[/pipeline.sh]
 
-Baraa's project doesn't have any kind of automated pipeline, so I was a bit unsure about how
-to run the scripts in a clean and automated way.
-After briefly looking at Airflow,
+Baraa's project uses stored procedures for orchestration, but no clear flow to kick
+them off other than manually connecting to the db and running EXEC on the procedures.
+I wanted to run the scripts in a clean and automated way. After briefly looking at Airflow,
 I decided to write the ETL pipeline with Bash (`pipeline.sh`), since I started testing
 things with `psql` on the command line and am not ready to dive into learning the Airflow
-syntax just yet. Simple.
+syntax just yet. Simple. Each bash function does kick off SQL commands, though, some as
+temporary procedures (DO blocks).
 
-The `pipeline.sh` script calls SQL scripts run with psql, with output to the command line
+The `pipeline.sh` script calls the SQL scripts with psql, with output to the command line
 and a log in `/tmp/sql-data-warehouse/`.
 
 To run the full pipeline:
