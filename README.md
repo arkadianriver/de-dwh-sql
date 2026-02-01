@@ -1,4 +1,4 @@
-# de-dwh-sql
+# sql-data-warehouse
 
 My take on _Data With Baraa_'s Data Warehouse project,
 using PostgreSQL instead of Microsoft SQL Server.
