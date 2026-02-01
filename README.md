@@ -3,7 +3,7 @@
 My take on _Data With Baraa_'s Data Warehouse project,
 using PostgreSQL instead of Microsoft SQL Server.
 
-[This project's docs are available here](https://arkadianriver.github.io/de-dwh-sql/).
+[This project's docs are available here](https://arkadianriver.github.io/sql-data-warehouse/).
 
 Refer to those docs to set up PostgreSQL on Linux.
 Once installed, you can create the data warehouse
